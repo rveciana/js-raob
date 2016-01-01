@@ -43,10 +43,15 @@ tape("radiosonde TTAA section decoding", function(test) {
   resultTTAA = functions.decodeTTAA(ttaaString.replace('33004','33104'));
   test.equals(resultTTAA['sfc']['ws'], 104, "SFC wind speed must be 104");
 
-
+  //Check noData
+  resultTTAA = functions.decodeTTAA(ttaaString2);
+  test.true(isNaN(resultTTAA['1000mb']['t']), "1000mb temp must be nodata");
+  test.true(isNaN(resultTTAA['1000mb']['td']), "1000mb td must be nodata");
+  test.true(isNaN(resultTTAA['1000mb']['ws']), "1000mb ws must be nodata");
+  test.true(isNaN(resultTTAA['1000mb']['wd']), "1000mb wd must be nodata");
 
   //Error testing: http://stackoverflow.com/a/32678148/1086633
-  test.throws(()=>functions.decodeTTAA(ttaaString.replace("TTAA", "ERROR")), Error);
+  test.throws(()=>functions.decodeTTAA(ttaaString.replace("TTAA", "ERROR")), Error, "Bad headers");
 
   test.end();
 });
