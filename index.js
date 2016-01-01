@@ -1,2 +1,1 @@
-export {default as foo} from "./src/foo";
-export {decodeTTAA} from "./src/radiosonde-code";
+export {decodeTTAA, decodeTTBB} from "./src/radiosonde-code";
