@@ -1,15 +1,11 @@
-# d3-foo
+# js-raob
 
-YOUR DESCRIPTION HERE. Replace all instances of `foo` in this file with the name of your new plugin.
+This package can decode radiosonde data in different formats and put it in a common JSON format, so graphics can be created easily. It also calculates indexes.
+
+[![Build Status](https://travis-ci.org/rveciana/js-raob.svg?branch=master)](https://travis-ci.org/rveciana/js-raob)
 
 ## Installing
 
-If you use NPM, `npm install d3-foo`. Otherwise, download the [latest release](https://github.com/d3/d3-foo/releases/latest).
+If you use NPM, `npm install js-raob`. Otherwise, download the [latest release](https://github.com/rveciana/js-raob/releases/latest).
 
 ## API Reference
-
-YOUR API DOCUMENTATION HERE. Use bold for symbols (such as constructor and method names) and italics for instances. See the other D3 modules for examples.
-
-<a href="#foo" name="foo">#</a> <b>foo</b>()
-
-Computes the answer to the ultimate question of life, the universe, and everything.

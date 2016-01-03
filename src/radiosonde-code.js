@@ -1,8 +1,17 @@
+export function decodeWMO(wmoString) {
+
+
+  //var resultTTBB = decodeTTBB(ttbbString);
+  return {};
+
+};
+
+
 export function decodeTTAA(ttaaString) {
   var decodedTTAA = {};
   var ttaaArray = ttaaString
     .replace(/(?:\r\n|\r|\n)/g, ' ')
-    .replace("  "," ")
+    .replace(/\s\s+/g, ' ')
     .trim()
     .split(" ");
 
@@ -90,6 +99,41 @@ export function decodeTTAA(ttaaString) {
 
 
 export function decodeTTBB(ttbbString) {
-  var decodedTTBB = {};
+  var decodedTTBB = [];
+  var ttbbArray = ttbbString
+    .replace(/(?:\r\n|\r|\n)/g, ' ')
+    .replace(/\s\s+/g, ' '," ")
+    .trim()
+    .split(" ");
+
+  if (ttbbArray[0]!='TTBB')
+    throw new Error("String must include TTBB");
+
+  decodedTTBB['day'] = parseInt(ttbbArray[1].substring(0, 2)) - 50;
+  decodedTTBB['hour'] = parseInt(ttbbArray[1].substring(2, 4));
+  decodedTTBB['wind_flag'] = parseInt(ttbbArray[1].substring(4, 5));
+  decodedTTBB['station_code'] = ttbbArray[2];
+  for (var i=3; i + 2 <= ttbbArray.length; i=i+2){
+    //var cc = ttbbArray[i].substring(0, 2);
+    if (ttbbArray[i] == '31313')
+      break
+    var press = parseInt(ttbbArray[i].substring(2, 5));
+    if (press < 100)
+      press = 1000 + press;
+
+    var t = parseFloat(ttbbArray[i+1].substring(0, 3))/10;
+    if ((parseInt(ttbbArray[i+1].substring(0, 3)) % 2) == 1)
+       t = t * -1;
+    var td = parseFloat(ttbbArray[i+1].substring(3, 5));
+    if (td<=50)
+      td = t - td/10;
+    else
+      td = td - 50;
+    td = t - td
+
+    decodedTTBB.push({'press': press, 't': t, 'td': td});
+
+  }
+
   return decodedTTBB;
 };

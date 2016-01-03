@@ -1,12 +1,12 @@
 {
-  "name": "d3-foo",
+  "name": "js-raob",
   "version": "0.0.1",
   "description": "{DESCRIPTION}",
   "keywords": [
     "d3"
   ],
   "license": "BSD-3-Clause",
-  "main": "build/d3-raob.js",
+  "main": "build/js-raob.js",
   "jsnext:main": "index",
   "homepage": "https://github.com/{USERNAME}/d3-foo",
   "repository": {
@@ -14,9 +14,9 @@
     "url": "https://github.com/{USERNAME}/d3-foo.git"
   },
   "scripts": {
-    "pretest": "mkdir -p build && node -e 'process.stdout.write(\"var version = \\\"\" + require(\"./package.json\").version + \"\\\"; export * from \\\"../index\\\"; export {version};\");' > build/bundle.js && rollup -f umd -u d3-raob -n d3_raob -o build/d3-raob.js -- build/bundle.js",
+    "pretest": "mkdir -p build && node -e 'process.stdout.write(\"var version = \\\"\" + require(\"./package.json\").version + \"\\\"; export * from \\\"../index\\\"; export {version};\");' > build/bundle.js && rollup -f umd -u js-raob -n js_raob -o build/js-raob.js -- build/bundle.js",
     "test": "faucet `find test -name '*-test.js'`",
-    "prepublish": "npm run test && uglifyjs build/d3-foo.js -c -m -o build/d3-foo.min.js && rm -f build/d3-foo.zip && zip -j build/d3-foo.zip -- LICENSE README.md build/d3-foo.js build/d3-foo.min.js"
+    "prepublish": "npm run test && uglifyjs build/js-raob.js -c -m -o build/js-raob.min.js && rm -f build/js-raob.zip && zip -j build/js-raob.zip -- LICENSE README.md build/js-raob.js build/js-raob.min.js"
   },
   "devDependencies": {
     "faucet": "0.0",
