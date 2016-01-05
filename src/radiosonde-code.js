@@ -107,17 +107,11 @@ export function decodeTTAA(ttaaString) {
 
 
    var ttdArray = ttd(ttaaArray[i+1]);
-
-
-   var wd = parseInt(ttaaArray[i+2].substring(0, 3));
-   var ws = parseInt(ttaaArray[i+2].substring(3, 5));
-
-   if (wd%5 == 1)
-      ws = ws + 100;
+   var wswdArray = wswd(ttaaArray[i+2]);
 
    decodedTTAA['data'].push({'press': press, 'height': height,
                               't': ttdArray[0], 'td': ttdArray[1],
-                              'ws': ws, 'wd': wd});
+                              'ws': wswdArray[0], 'wd': wswdArray[1]});
 
   }
   return decodedTTAA;
@@ -170,4 +164,16 @@ function ttd(ttdStr){
   td = t - td;
 
   return [t, td];
-}
+};
+
+/*Decodes the wind string*/
+function wswd(wswdStr){
+  var wd = parseInt(wswdStr.substring(0, 3));
+  var ws = parseInt(wswdStr.substring(3, 5));
+
+  if (wd%5 == 1){
+     ws = ws + 100;
+     wd = wd - 1;
+  }
+  return [ws, wd];
+};
