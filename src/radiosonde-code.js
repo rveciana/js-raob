@@ -139,6 +139,8 @@ export function decodeTTBB(ttbbString) {
   decodedTTBB['hour'] = parseInt(ttbbArray[1].substring(2, 4));
   decodedTTBB['wind_flag'] = parseInt(ttbbArray[1].substring(4, 5));
   decodedTTBB['station_code'] = ttbbArray[2];
+  decodedTTBB['data'] = [];
+
   for (var i=3; i + 2 <= ttbbArray.length; i=i+2){
     //var cc = ttbbArray[i].substring(0, 2);
     if (ttbbArray[i] == '31313')
@@ -148,7 +150,7 @@ export function decodeTTBB(ttbbString) {
       press = 1000 + press;
 
     var ttdArray = ttd(ttbbArray[i+1]);
-    decodedTTBB.push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
+    decodedTTBB['data'].push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
 
   }
 

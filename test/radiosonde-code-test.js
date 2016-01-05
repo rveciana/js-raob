@@ -62,7 +62,6 @@ tape("radiosonde TTAA section decoding", function(test) {
   test.equals(resultTTAA['station_code'], "72518","Station code must be 72518 at Albany, New York");
 
 
-  console.info(resultTTAA['data']);
   test.equals(resultTTAA['data'][0]['press'], 1030, "SFC pressure must be 1030");
   test.equals(resultTTAA['data'][0]['t'], 8.8, "SFC temp must be 8.8");
   test.true(Math.abs(resultTTAA['data'][0]['td'] - (8.8 - 13)) < 0.001, "SFC td must be 8.8 - 13");
@@ -106,9 +105,21 @@ tape("radiosonde TTBB section decoding", function(test) {
   00900=`
 
   var resultTTBB = functions.decodeTTBB(ttbbString);
+  test.equals(resultTTBB['day'], 31, "Day must be 31");
+  test.equals(resultTTBB['hour'], 0, "Hour must be 00UTC");
+  test.equals(resultTTBB['wind_flag'], 0, "Wind flag must be 0");
+  test.equals(resultTTBB['station_code'], "72518","Station code must be 72518 at Albany, New York");
+  console.info(resultTTBB);
 
+  test.equals(resultTTBB['data'][0]['press'], 1030, "First level pressure must be 1030");
+  test.equals(resultTTBB['data'][0]['t'], 8.8, "First level temp must be 8.8");
+  test.true(Math.abs(resultTTBB['data'][0]['td'] - (8.8 - 13)) < 0.001, "First level td must be 8.8 - 13");
+
+  test.equals(resultTTBB['data'][6]['press'], 793, "Seventh level pressure must be 1030");
+  test.equals(resultTTBB['data'][6]['t'], 1.8, "Seventh level temp must be 1.8");
+  test.true(Math.abs(resultTTBB['data'][6]['td'] - (1.8 - 34)) < 0.001, "Seventh level td must be 1.8 - 34");
   //Error testing: http://stackoverflow.com/a/32678148/1086633
-  //test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
+  test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
   test.end();
 });
 
