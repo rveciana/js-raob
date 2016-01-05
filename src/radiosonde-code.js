@@ -105,15 +105,10 @@ export function decodeTTAA(ttaaString) {
 
    }
 
-   var t = parseFloat(ttaaArray[i+1].substring(0, 3))/10;
-   if ((parseInt(ttaaArray[i+1].substring(0, 3)) % 2) == 1)
-      t = t * -1;
-   var td = parseFloat(ttaaArray[i+1].substring(3, 5));
-      if (td<=50)
-        td = t - td/10;
-      else
-        td = td - 50;
-   td = t - td;
+
+   var ttdArray = ttd(ttaaArray[i+1]);
+
+
    var wd = parseInt(ttaaArray[i+2].substring(0, 3));
    var ws = parseInt(ttaaArray[i+2].substring(3, 5));
 
@@ -121,7 +116,8 @@ export function decodeTTAA(ttaaString) {
       ws = ws + 100;
 
    decodedTTAA['data'].push({'press': press, 'height': height,
-                              't': t, 'td': td, 'ws': ws, 'wd': wd});
+                              't': ttdArray[0], 'td': ttdArray[1],
+                              'ws': ws, 'wd': wd});
 
   }
   return decodedTTAA;
@@ -151,19 +147,25 @@ export function decodeTTBB(ttbbString) {
     if (press < 100)
       press = 1000 + press;
 
-    var t = parseFloat(ttbbArray[i+1].substring(0, 3))/10;
-    if ((parseInt(ttbbArray[i+1].substring(0, 3)) % 2) == 1)
-       t = t * -1;
-    var td = parseFloat(ttbbArray[i+1].substring(3, 5));
-    if (td<=50)
-      td = t - td/10;
-    else
-      td = td - 50;
-    td = t - td
-
-    decodedTTBB.push({'press': press, 't': t, 'td': td});
+    var ttdArray = ttd(ttbbArray[i+1]);
+    decodedTTBB.push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
 
   }
 
   return decodedTTBB;
 };
+
+/*Decodes a T Td string*/
+function ttd(ttdStr){
+  var t = parseFloat(ttdStr.substring(0, 3))/10;
+  if ((parseInt(ttdStr.substring(0, 3)) % 2) == 1)
+     t = t * -1;
+  var td = parseFloat(ttdStr.substring(3, 5));
+     if (td<=50)
+       td = t - td/10;
+     else
+       td = td - 50;
+  td = t - td;
+
+  return [t, td];
+}
