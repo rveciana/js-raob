@@ -20,6 +20,10 @@ TTBB  81000 72518 00030 08863 11012 11264 22925 04461
 44506 16575 55467 20166 66300 45763 77250 55158 88187 64957
 99176 60758 11142 58161 22100 62164 31313 45202 82321 41414
 00900=
+PPBB  81000 72518 90012 33004 34520 35018 90346 00518 02021
+36028 90789 34527 34026 33525 91024 32525 32031 31539 9167/
+31043 31550 9205/ 31050 30553 93025 30055 29555 29571 9405/
+28580 27071 9503/ 27565 28056=
 `;
 
 var wmoStringBCN = `TTAA 80231 08190 99012 12057 35003 00200 12661 24002 92850 09660 28013 85546
@@ -50,35 +54,42 @@ tape("radiosonde TTAA section decoding", function(test) {
 29520 25939 63163 30530 20076 64369 30034 15251 67169 31534 10493 71967 31534
 88267 62960 30525 88168 66569 31535 77999`;
 
+
   var resultTTAA = functions.decodeTTAA(ttaaString);
   test.equals(resultTTAA['day'], 31, "Day must be 31");
   test.equals(resultTTAA['hour'], 0, "Hour must be 00UTC");
   test.equals(resultTTAA['wind_flag'], 1, "Wind flag must be 1");
   test.equals(resultTTAA['station_code'], "72518","Station code must be 72518 at Albany, New York");
 
-  test.equals(resultTTAA['sfc']['press'], 1030, "SFC pressure must be 1030");
-  test.equals(resultTTAA['sfc']['t'], 8.8, "SFC temp must be 8.8");
-  test.true(Math.abs(resultTTAA['sfc']['td'] - (8.8 - 13)) < 0.001, "SFC td must be 8.8 - 13");
 
-  test.equals(resultTTAA['700mb']['t'], -4.1, "700mb temp must be -4.1");
-  test.true(Math.abs(resultTTAA['700mb']['td'] - (-4.1 - 32)) < 0.001, "700mb td must be -4.1 - 32");
+  console.info(resultTTAA['data']);
+  test.equals(resultTTAA['data'][0]['press'], 1030, "SFC pressure must be 1030");
+  test.equals(resultTTAA['data'][0]['t'], 8.8, "SFC temp must be 8.8");
+  test.true(Math.abs(resultTTAA['data'][0]['td'] - (8.8 - 13)) < 0.001, "SFC td must be 8.8 - 13");
+  test.equals(resultTTAA['data'][0]['height'], null, "sfc hasn't got height");
 
-  test.equals(resultTTAA['tropopause']['press'], 192, "Tropopause pressure must be 192");
-  test.equals(resultTTAA['max_wind']['press'], 182, "max_wind pressure must be 182");
+  test.equals(resultTTAA['data'][4]['t'], -4.1, "700mb temp must be -4.1");
+  test.true(Math.abs(resultTTAA['data'][4]['td'] - (-4.1 - 32)) < 0.001, "700mb td must be -4.1 - 32");
+  test.equals(resultTTAA['data'][4]['height'], 3138, "700mb height = 3138");
+
+  test.equals(resultTTAA['tropopause_lvl'], 192, "Tropopause pressure must be 192");
+  test.equals(resultTTAA['max_wind_lvl'], 182, "max_wind pressure must be 182");
+
+
 
   //Check winds
-  test.equals(resultTTAA['sfc']['wd'], 330, "SFC wind dir must be 330");
-  test.equals(resultTTAA['sfc']['ws'], 4, "SFC wind speed must be 4");
+  test.equals(resultTTAA['data'][0]['wd'], 330, "SFC wind dir must be 330");
+  test.equals(resultTTAA['data'][0]['ws'], 4, "SFC wind speed must be 4");
   //Strong wind
   resultTTAA = functions.decodeTTAA(ttaaString.replace('33004','33104'));
-  test.equals(resultTTAA['sfc']['ws'], 104, "SFC wind speed must be 104");
+  test.equals(resultTTAA['data'][0]['ws'], 104, "SFC wind speed must be 104");
 
   //Check noData
   resultTTAA = functions.decodeTTAA(ttaaString2);
-  test.true(isNaN(resultTTAA['1000mb']['t']), "1000mb temp must be nodata");
-  test.true(isNaN(resultTTAA['1000mb']['td']), "1000mb td must be nodata");
-  test.true(isNaN(resultTTAA['1000mb']['ws']), "1000mb ws must be nodata");
-  test.true(isNaN(resultTTAA['1000mb']['wd']), "1000mb wd must be nodata");
+  test.true(isNaN(resultTTAA['data'][1]['t']), "1000mb temp must be nodata");
+  test.true(isNaN(resultTTAA['data'][1]['td']), "1000mb td must be nodata");
+  test.true(isNaN(resultTTAA['data'][1]['ws']), "1000mb ws must be nodata");
+  test.true(isNaN(resultTTAA['data'][1]['wd']), "1000mb wd must be nodata");
 
   //Error testing: http://stackoverflow.com/a/32678148/1086633
   test.throws(()=>functions.decodeTTAA(ttaaString.replace("TTAA", "ERROR")), Error, "Bad headers");
@@ -96,7 +107,6 @@ tape("radiosonde TTBB section decoding", function(test) {
 
   var resultTTBB = functions.decodeTTBB(ttbbString);
 
-  console.info(resultTTBB);
   //Error testing: http://stackoverflow.com/a/32678148/1086633
   //test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
   test.end();
