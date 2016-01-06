@@ -177,9 +177,9 @@ function decodePPBB(ppbbString){
       for (var j=2; j<=4; j++){
         var delta = parseInt(ppbbArray[i].substring(j,j+1));
         if (!isNaN(delta)){
-          var height = 0.3048 * (1000 * delta + baseHgt);
           var wswdArray = wswd(ppbbArray[i + j - 1]);
-          decodedPPBB['data'].push({'height': height, 'ws': wswdArray[0], 'wd': wswdArray[1]});
+          decodedPPBB['data'].push({'height': 0.3048 * (1000 * delta + baseHgt),
+                          'ws': wswdArray[0], 'wd': wswdArray[1]});
         }
       }
     }
