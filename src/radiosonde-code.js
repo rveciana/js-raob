@@ -15,7 +15,6 @@ export function decodeWMO(wmoString) {
       var nextSection = positions.indexOf(sorted[i+1]);
 
       var string = wmoString.substring(positions[section], positions[nextSection]);
-      console.info(string);
       switch(section) {
         case 0:
           decodedData['TTAA'] = decodeTTAA(string);
