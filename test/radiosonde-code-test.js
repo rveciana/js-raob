@@ -20,10 +20,10 @@ TTBB  81000 72518 00030 08863 11012 11264 22925 04461
 44506 16575 55467 20166 66300 45763 77250 55158 88187 64957
 99176 60758 11142 58161 22100 62164 31313 45202 82321 41414
 00900=
-PPBB  81000 72518 90012 33004 34520 35018 90346 00518 02021
-36028 90789 34527 34026 33525 91024 32525 32031 31539 9167/
-31043 31550 9205/ 31050 30553 93025 30055 29555 29571 9405/
-28580 27071 9503/ 27565 28056=
+PPBB 81001 72518 90012 36003 15017 17517 90346 18517 18016 17015
+90789 17012 17512 17013 91124 15014 15513 16512 916// 16507 9205/
+14001 18004 9305/ 09501 29002 94039 32513 32013 01017 9504/ 02019 03024=
+03024=
 `;
 
 var wmoStringBCN = `TTAA 80231 08190 99012 12057 35003 00200 12661 24002 92850 09660 28013 85546
@@ -109,7 +109,6 @@ tape("radiosonde TTBB section decoding", function(test) {
   test.equals(resultTTBB['hour'], 0, "Hour must be 00UTC");
   test.equals(resultTTBB['wind_flag'], 0, "Wind flag must be 0");
   test.equals(resultTTBB['station_code'], "72518","Station code must be 72518 at Albany, New York");
-  console.info(resultTTBB);
 
   test.equals(resultTTBB['data'][0]['press'], 1030, "First level pressure must be 1030");
   test.equals(resultTTBB['data'][0]['t'], 8.8, "First level temp must be 8.8");
@@ -120,6 +119,18 @@ tape("radiosonde TTBB section decoding", function(test) {
   test.true(Math.abs(resultTTBB['data'][6]['td'] - (1.8 - 34)) < 0.001, "Seventh level td must be 1.8 - 34");
   //Error testing: http://stackoverflow.com/a/32678148/1086633
   test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
+  test.end();
+});
+
+tape("radiosonde PPBB section decoding", function(test) {
+  var result = functions.decodeWMO(wmoString);
+  test.equals(result['PPBB']['data'][0]['height'], 0, "First wind value height is 0 (sfc)");
+  test.equals(result['PPBB']['data'][0]['ws'], 3, "First wind value ws is 3");
+  test.equals(result['PPBB']['data'][0]['wd'], 360, "First wind value wd is 360");
+  test.equals(result['PPBB']['data'][1]['height'], 1000 * 0.3048, "Second wind value height is 1000 ft passed to m");
+  test.equals(result['PPBB']['data'][result['PPBB']['data'].length - 1]['height'],
+                54000 * 0.3048, "Last wind value height is 54000 ft passed to m");
+
   test.end();
 });
 

@@ -23,6 +23,9 @@ export function decodeWMO(wmoString) {
         case 1:
           decodedData['TTBB'] = decodeTTBB(string);
           break;
+        case 4:
+          decodedData['PPBB'] = decodePPBB(string);
+          break;
       }
 
     }
@@ -149,6 +152,40 @@ export function decodeTTBB(ttbbString) {
   }
 
   return decodedTTBB;
+};
+
+
+function decodePPBB(ppbbString){
+  var decodedPPBB = {};
+  var ppbbArray = ppbbString
+    .replace(/(?:\r\n|\r|\n)/g, ' ')
+    .replace(/\s\s+/g, ' '," ")
+    .trim()
+    .split(" ");
+
+  decodedPPBB['data'] = [];
+  if (ppbbArray[0]!='PPBB')
+    throw new Error("String must include PPBB");
+
+  decodedPPBB['day'] = parseInt(ppbbArray[1].substring(0, 2)) - 50;
+  decodedPPBB['hour'] = parseInt(ppbbArray[1].substring(2, 4));
+  decodedPPBB['wind_flag'] = parseInt(ppbbArray[1].substring(4, 5));
+  decodedPPBB['station_code'] = ppbbArray[2];
+  for (var i=3; i + 3 <= ppbbArray.length; i++){
+    if (ppbbArray[i].substring(0,1) == '9'){
+      var baseHgt = parseInt(ppbbArray[i].substring(1,2)) * 10000;
+      for (var j=2; j<=4; j++){
+        var delta = parseInt(ppbbArray[i].substring(j,j+1));
+        if (!isNaN(delta)){
+          var height = 0.3048 * (1000 * delta + baseHgt);
+          var wswdArray = wswd(ppbbArray[i + j - 1]);
+          decodedPPBB['data'].push({'height': height, 'ws': wswdArray[0], 'wd': wswdArray[1]});
+        }
+      }
+    }
+  }
+
+  return decodedPPBB;
 };
 
 /*Decodes a T Td string*/
