@@ -1,12 +1,12 @@
-export function decodeWMO(wmoString) {
+export default function (tempString) {
   var decodedData = {};
 
-  var positions = [wmoString.indexOf('TTAA'),
-                    wmoString.indexOf('TTBB'),
-                    wmoString.indexOf('TTCC'),
-                    wmoString.indexOf('TTDD'),
-                    wmoString.indexOf('PPBB'),
-                    wmoString.indexOf('PPDD')];
+  var positions = [tempString.indexOf('TTAA'),
+                    tempString.indexOf('TTBB'),
+                    tempString.indexOf('TTCC'),
+                    tempString.indexOf('TTDD'),
+                    tempString.indexOf('PPBB'),
+                    tempString.indexOf('PPDD')];
   var sorted = positions.slice().sort();
 
   for (var i = 0; i<sorted.length; i++){
@@ -14,7 +14,7 @@ export function decodeWMO(wmoString) {
       var section = positions.indexOf(sorted[i]);
       var nextSection = positions.indexOf(sorted[i+1]);
 
-      var string = wmoString.substring(positions[section], positions[nextSection]);
+      var string = tempString.substring(positions[section], positions[nextSection]);
       switch(section) {
         case 0:
           decodedData['TTAA'] = decodeTTAA(string);
@@ -36,7 +36,7 @@ export function decodeWMO(wmoString) {
 };
 
 
-export function decodeTTAA(ttaaString) {
+function decodeTTAA(ttaaString) {
   var decodedTTAA = {};
   var ttaaArray = ttaaString
     .replace(/(?:\r\n|\r|\n)/g, ' ')
@@ -120,7 +120,7 @@ export function decodeTTAA(ttaaString) {
 };
 
 
-export function decodeTTBB(ttbbString) {
+function decodeTTBB(ttbbString) {
   var decodedTTBB = [];
   var ttbbArray = ttbbString
     .replace(/(?:\r\n|\r|\n)/g, ' ')

@@ -8,7 +8,7 @@ var tape = require("tape"),
     functions = require("../");
 
 
-var wmoString = `TTAA  81001 72518 99030 08863 33004 00263 10464 34016
+var tempString = `TTAA  81001 72518 99030 08863 33004 00263 10464 34016
 92904 04461 00518 85585 00079 01526 70138 04182 32526 50572
 17372 31549 40736 28766 31052 30935 45763 30055 25054 55158
 29568 20193 63557 28573 15371 58560 27071 10624 62164 28053
@@ -26,7 +26,7 @@ PPBB 81001 72518 90012 36003 15017 17517 90346 18517 18016 17015
 03024=
 `;
 
-var wmoStringBCN = `TTAA 80231 08190 99012 12057 35003 00200 12661 24002 92850 09660 28013 85546
+var tempStringBCN = `TTAA 80231 08190 99012 12057 35003 00200 12661 24002 92850 09660 28013 85546
 07066 28023 70134 02075 27016 50576 15758 27526 40740 28959 27038 30941 40963
 26533 25062 50961 27531 20203 63756 28036 15377 65359 27551 10627 62770 29045
 88166 68957 27539 77140 28061 42229 31313 47708 82300
@@ -55,7 +55,7 @@ tape("radiosonde TTAA section decoding", function(test) {
 88267 62960 30525 88168 66569 31535 77999`;
 
 
-  var result = functions.decodeWMO(wmoString);
+  var result = functions.decodeTEMP(tempString);
   test.equals(result['TTAA']['day'], 31, "Day must be 31");
   test.equals(result['TTAA']['hour'], 0, "Hour must be 00UTC");
   test.equals(result['TTAA']['wind_flag'], 1, "Wind flag must be 1");
@@ -80,25 +80,25 @@ tape("radiosonde TTAA section decoding", function(test) {
   test.equals(result['TTAA']['data'][0]['wd'], 330, "SFC wind dir must be 330");
   test.equals(result['TTAA']['data'][0]['ws'], 4, "SFC wind speed must be 4");
   //Strong wind
-  result = functions.decodeWMO(wmoString.replace('33004','33104'));
+  result = functions.decodeTEMP(tempString.replace('33004','33104'));
   test.equals(result['TTAA']['data'][0]['ws'], 104, "SFC wind speed must be 104");
 
   //Check noData
-  result = functions.decodeWMO(wmoString.replace('10464','////').replace('34016','////'));
+  result = functions.decodeTEMP(tempString.replace('10464','////').replace('34016','////'));
   test.true(isNaN(result['TTAA']['data'][1]['t']), "1000mb temp must be nodata");
   test.true(isNaN(result['TTAA']['data'][1]['td']), "1000mb td must be nodata");
   test.true(isNaN(result['TTAA']['data'][1]['ws']), "1000mb ws must be nodata");
   test.true(isNaN(result['TTAA']['data'][1]['wd']), "1000mb wd must be nodata");
 
   //Error testing: http://stackoverflow.com/a/32678148/1086633
-  //test.throws(()=>functions.decodeWMO(wmoString.replace("TTAA", "ERROR")), Error, "Bad headers");
+  //test.throws(()=>functions.decodeTEMP(tempString.replace("TTAA", "ERROR")), Error, "Bad headers");
 
   test.end();
 });
 
 tape("radiosonde TTBB section decoding", function(test) {
 
-  var result = functions.decodeWMO(wmoString);
+  var result = functions.decodeTEMP(tempString);
 
   test.equals(result['TTBB']['day'], 31, "Day must be 31");
   test.equals(result['TTBB']['hour'], 0, "Hour must be 00UTC");
@@ -118,7 +118,7 @@ tape("radiosonde TTBB section decoding", function(test) {
 });
 
 tape("radiosonde PPBB section decoding", function(test) {
-  var result = functions.decodeWMO(wmoString);
+  var result = functions.decodeTEMP(tempString);
   test.equals(result['PPBB']['data'][0]['height'], 0, "First wind value height is 0 (sfc)");
   test.equals(result['PPBB']['data'][0]['ws'], 3, "First wind value ws is 3");
   test.equals(result['PPBB']['data'][0]['wd'], 360, "First wind value wd is 360");
@@ -129,8 +129,8 @@ tape("radiosonde PPBB section decoding", function(test) {
   test.end();
 });
 
-tape("radiosonde WMO decoding", function(test) {
-  functions.decodeWMO(wmoString);
+tape("radiosonde TEMP decoding", function(test) {
+  functions.decodeTEMP(tempString);
 
   test.end();
 });

@@ -1,1 +1,1 @@
-export {decodeWMO, decodeTTAA, decodeTTBB} from "./src/radiosonde-code";
+export {default as decodeTEMP} from "./src/temp-code";
