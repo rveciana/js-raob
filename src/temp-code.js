@@ -7,7 +7,7 @@ export default function (tempString) {
                     tempString.indexOf('TTDD'),
                     tempString.indexOf('PPBB'),
                     tempString.indexOf('PPDD')];
-  var sorted = positions.slice().sort();
+  var sorted = positions.slice().sort(function(a,b){return a - b});
 
   for (var i = 0; i<sorted.length; i++){
     if (sorted[i] >= 0){
@@ -15,6 +15,7 @@ export default function (tempString) {
       var nextSection = positions.indexOf(sorted[i+1]);
 
       var string = tempString.substring(positions[section], positions[nextSection]);
+
       switch(section) {
         case 0:
           decodedData['TTAA'] = decodeTTAA(string);
@@ -22,8 +23,17 @@ export default function (tempString) {
         case 1:
           decodedData['TTBB'] = decodeTTBB(string);
           break;
+        case 2:
+          decodedData['TTCC'] = decodeTTCC(string);
+          break;
+        case 3:
+          decodedData['TTDD'] = decodeTTBB(string);
+          break;
         case 4:
           decodedData['PPBB'] = decodePPBB(string);
+          break;
+        case 5:
+          decodedData['PPDD'] = decodePPBB(string);
           break;
       }
 
@@ -60,6 +70,7 @@ function decodeTTAA(ttaaString) {
     var height = null;
     if (ttaaArray[i] == '51515')
       break
+    //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttaaArray[i].substring(0, 2);
 
     if (cc =='99'){
@@ -71,6 +82,8 @@ function decodeTTAA(ttaaString) {
    } else if (cc == '00'){
      press = 1000;
      height = parseInt(ttaaArray[i].substring(2, 5));
+     if (height >= 500)
+        height = -1 * (height - 500);
    } else if (cc == '92'){
      press = 925;
      height = parseInt(ttaaArray[i].substring(2, 5));
@@ -80,13 +93,12 @@ function decodeTTAA(ttaaString) {
      height = 1000 + parseInt(ttaaArray[i].substring(2, 5));
 
    } else if (cc == '70'){
-     press = 700;
-
-     height = parseInt(ttaaArray[i].substring(2, 5));
-     if (height > 700)
-        height = height + 2000;
-     else
-     height = height + 3000;
+      press = 700;
+      height = parseInt(ttaaArray[i].substring(2, 5));
+      if (height > 700)
+         height = height + 2000;
+      else
+        height = height + 3000;
 
    } else if (cc == '50' || cc == '40' || cc == '30' || cc == '25' || cc == '20' || cc == '15' || cc == '10'){
 
@@ -128,8 +140,8 @@ function decodeTTBB(ttbbString) {
     .trim()
     .split(" ");
 
-  if (ttbbArray[0]!='TTBB')
-    throw new Error("String must include TTBB");
+  if (ttbbArray[0]!='TTBB' && ttbbArray[0]!='TTDD')
+    throw new Error("String must include TTBB, TTCC or TTDD");
 
   decodedTTBB['day'] = parseInt(ttbbArray[1].substring(0, 2)) - 50;
   decodedTTBB['hour'] = parseInt(ttbbArray[1].substring(2, 4));
@@ -141,9 +153,13 @@ function decodeTTBB(ttbbString) {
     //var cc = ttbbArray[i].substring(0, 2);
     if (ttbbArray[i] == '31313')
       break
-    var press = parseInt(ttbbArray[i].substring(2, 5));
-    if (press < 100)
-      press = 1000 + press;
+    if (ttbbArray[0]=='TTBB'){
+      var press = parseInt(ttbbArray[i].substring(2, 5));
+      if (press < 100)
+        press = 1000 + press;
+    } else {
+      var press = parseFloat(ttbbArray[i].substring(2, 5))/10;
+    }
 
     var ttdArray = ttd(ttbbArray[i+1]);
     decodedTTBB['data'].push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
@@ -153,6 +169,59 @@ function decodeTTBB(ttbbString) {
   return decodedTTBB;
 };
 
+function decodeTTCC(ttccString) {
+  var decodedTTCC = {};
+  var ttccArray = ttccString
+    .replace(/(?:\r\n|\r|\n)/g, ' ')
+    .replace(/\s\s+/g, ' ')
+    .trim()
+    .split(" ");
+
+  if (ttccArray[0]!='TTCC')
+    throw new Error("String must include TTCC");
+
+  decodedTTCC['day'] = parseInt(ttccArray[1].substring(0, 2)) - 50;
+  decodedTTCC['hour'] = parseInt(ttccArray[1].substring(2, 4));
+  decodedTTCC['wind_flag'] = parseInt(ttccArray[1].substring(4, 5));
+  decodedTTCC['station_code'] = ttccArray[2];
+  decodedTTCC['data'] = [];
+
+  for (var i=3; i + 3 <= ttccArray.length; i=i+3){
+    var press = null;
+    var height = null;
+    if (ttccArray[i] == '88999')
+      break
+    //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
+    var cc = ttccArray[i].substring(0, 2);
+    if (cc == '70'){
+      press = 70;
+      height = 10000 + 10 * parseInt(ttccArray[i].substring(2, 5));
+
+    } else if (cc == '50'){
+      press = 50;
+      height = parseInt(ttccArray[i].substring(2, 5));
+      if (height < 500)
+        height = 20000 + 10 * height;
+      else
+        height = 10000 + 10 * height;
+
+    } else if (cc == '30' || cc == '20'){
+      press = parseInt(cc);
+      height = 20000 + 10 * parseInt(ttccArray[i].substring(2, 5));
+    } else if (cc == '10'){
+      press = parseInt(cc);
+      height = 30000 + 10 * parseInt(ttccArray[i].substring(2, 5));
+    }
+
+    var ttdArray = ttd(ttccArray[i+1]);
+    var wswdArray = wswd(ttccArray[i+2]);
+
+    decodedTTCC['data'].push({'press': press, 'height': height,
+                               't': ttdArray[0], 'td': ttdArray[1],
+                               'ws': wswdArray[0], 'wd': wswdArray[1]});
+  }
+  return decodedTTCC;
+};
 
 function decodePPBB(ppbbString){
   var decodedPPBB = {};
@@ -163,8 +232,8 @@ function decodePPBB(ppbbString){
     .split(" ");
 
   decodedPPBB['data'] = [];
-  if (ppbbArray[0]!='PPBB')
-    throw new Error("String must include PPBB");
+  if (ppbbArray[0]!='PPBB' && ppbbArray[0]!='PPDD')
+    throw new Error("String must include PPBB or PPDD");
 
   decodedPPBB['day'] = parseInt(ppbbArray[1].substring(0, 2)) - 50;
   decodedPPBB['hour'] = parseInt(ppbbArray[1].substring(2, 4));
