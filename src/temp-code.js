@@ -100,15 +100,18 @@ function decodeTTAA(ttaaString) {
       else
         height = height + 3000;
 
-   } else if (cc == '50' || cc == '40' || cc == '30' || cc == '25' || cc == '20' || cc == '15' || cc == '10'){
+   } else if (cc == '30' || cc == '25'){
+     press = parseInt(cc)*10;
+     height = parseInt(ttaaArray[i].substring(2, 5));
+     if (height < 500)
+        height = 10000 + (height * 10);
+     else
+     height = height * 10;
+   } else if (cc == '50' || cc == '40' || cc == '20' || cc == '15' || cc == '10'){
 
      press = parseInt(cc)*10;
-     if (press > 250)
-        height = parseInt(ttaaArray[i].substring(2, 5)) * 10;
-     else
-        height = parseInt("1"+ttaaArray[i].substring(2, 5)) * 10;
-
-
+     height = parseInt(ttaaArray[i].substring(2, 5)) * 10;
+     
    } else if (cc =='88'){
      press = parseInt(ttaaArray[i].substring(2, 5));
      decodedTTAA['tropopause_lvl'] = press;
