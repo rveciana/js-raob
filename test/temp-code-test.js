@@ -74,39 +74,39 @@ var tempStringAllParts = ` TTAA 67121 72214 99019 24003 36003 00187 23803 08511 
 tape("radiosonde TTAA section decoding", function(test) {
 
   var result = functions.decodeTEMP(tempString);
-  test.equals(result['TTAA']['day'], 31, "Day must be 31");
-  test.equals(result['TTAA']['hour'], 0, "Hour must be 00UTC");
-  test.equals(result['TTAA']['wind_flag'], 1, "Wind flag must be 1");
-  test.equals(result['TTAA']['station_code'], "72518","Station code must be 72518 at Albany, New York");
+  test.equals(result.TTAA.day, 31, "Day must be 31");
+  test.equals(result.TTAA.hour, 0, "Hour must be 00UTC");
+  test.equals(result.TTAA.wind_flag, 1, "Wind flag must be 1");
+  test.equals(result.TTAA.station_code, "72518","Station code must be 72518 at Albany, New York");
 
 
-  test.equals(result['TTAA']['data'][0]['press'], 1030, "SFC pressure must be 1030");
-  test.equals(result['TTAA']['data'][0]['t'], 8.8, "SFC temp must be 8.8");
-  test.true(Math.abs(result['TTAA']['data'][0]['td'] - (8.8 - 13)) < 0.001, "SFC td must be 8.8 - 13");
-  test.equals(result['TTAA']['data'][0]['height'], null, "sfc hasn't got height");
+  test.equals(result.TTAA.data[0].press, 1030, "SFC pressure must be 1030");
+  test.equals(result.TTAA.data[0].t, 8.8, "SFC temp must be 8.8");
+  test.true(Math.abs(result.TTAA.data[0].td - (8.8 - 13)) < 0.001, "SFC td must be 8.8 - 13");
+  test.equals(result.TTAA.data[0].height, null, "sfc hasn't got height");
 
-  test.equals(result['TTAA']['data'][4]['t'], -4.1, "700mb temp must be -4.1");
-  test.true(Math.abs(result['TTAA']['data'][4]['td'] - (-4.1 - 32)) < 0.001, "700mb td must be -4.1 - 32");
-  test.equals(result['TTAA']['data'][4]['height'], 3138, "700mb height = 3138");
+  test.equals(result.TTAA.data[4].t, -4.1, "700mb temp must be -4.1");
+  test.true(Math.abs(result.TTAA.data[4].td - (-4.1 - 32)) < 0.001, "700mb td must be -4.1 - 32");
+  test.equals(result.TTAA.data[4].height, 3138, "700mb height = 3138");
 
-  test.equals(result['TTAA']['tropopause_lvl'], 192, "Tropopause pressure must be 192");
-  test.equals(result['TTAA']['max_wind_lvl'], 182, "max_wind pressure must be 182");
+  test.equals(result.TTAA.tropopause_lvl, 192, "Tropopause pressure must be 192");
+  test.equals(result.TTAA.max_wind_lvl, 182, "max_wind pressure must be 182");
 
 
 
   //Check winds
-  test.equals(result['TTAA']['data'][0]['wd'], 330, "SFC wind dir must be 330");
-  test.equals(result['TTAA']['data'][0]['ws'], 4, "SFC wind speed must be 4");
+  test.equals(result.TTAA.data[0].wd, 330, "SFC wind dir must be 330");
+  test.equals(result.TTAA.data[0].ws, 4, "SFC wind speed must be 4");
   //Strong wind
   result = functions.decodeTEMP(tempString.replace('33004','33104'));
-  test.equals(result['TTAA']['data'][0]['ws'], 104, "SFC wind speed must be 104");
+  test.equals(result.TTAA.data[0].ws, 104, "SFC wind speed must be 104");
 
   //Check noData
   result = functions.decodeTEMP(tempString.replace('10464','////').replace('34016','////'));
-  test.true(isNaN(result['TTAA']['data'][1]['t']), "1000mb temp must be nodata");
-  test.true(isNaN(result['TTAA']['data'][1]['td']), "1000mb td must be nodata");
-  test.true(isNaN(result['TTAA']['data'][1]['ws']), "1000mb ws must be nodata");
-  test.true(isNaN(result['TTAA']['data'][1]['wd']), "1000mb wd must be nodata");
+  test.true(isNaN(result.TTAA.data[1].t), "1000mb temp must be nodata");
+  test.true(isNaN(result.TTAA.data[1].td), "1000mb td must be nodata");
+  test.true(isNaN(result.TTAA.data[1].ws), "1000mb ws must be nodata");
+  test.true(isNaN(result.TTAA.data[1].wd), "1000mb wd must be nodata");
 
   //Error testing: http://stackoverflow.com/a/32678148/1086633
   //test.throws(()=>functions.decodeTEMP(tempString.replace("TTAA", "ERROR")), Error, "Bad headers");
@@ -118,18 +118,18 @@ tape("radiosonde TTBB section decoding", function(test) {
 
   var result = functions.decodeTEMP(tempString);
 
-  test.equals(result['TTBB']['day'], 31, "Day must be 31");
-  test.equals(result['TTBB']['hour'], 0, "Hour must be 00UTC");
-  test.equals(result['TTBB']['wind_flag'], 0, "Wind flag must be 0");
-  test.equals(result['TTBB']['station_code'], "72518","Station code must be 72518 at Albany, New York");
+  test.equals(result.TTBB.day, 31, "Day must be 31");
+  test.equals(result.TTBB.hour, 0, "Hour must be 00UTC");
+  test.equals(result.TTBB.wind_flag, 0, "Wind flag must be 0");
+  test.equals(result.TTBB.station_code, "72518","Station code must be 72518 at Albany, New York");
 
-  test.equals(result['TTBB']['data'][0]['press'], 1030, "First level pressure must be 1030");
-  test.equals(result['TTBB']['data'][0]['t'], 8.8, "First level temp must be 8.8");
-  test.true(Math.abs(result['TTBB']['data'][0]['td'] - (8.8 - 13)) < 0.001, "First level td must be 8.8 - 13");
+  test.equals(result.TTBB.data[0].press, 1030, "First level pressure must be 1030");
+  test.equals(result.TTBB.data[0].t, 8.8, "First level temp must be 8.8");
+  test.true(Math.abs(result.TTBB.data[0].td - (8.8 - 13)) < 0.001, "First level td must be 8.8 - 13");
 
-  test.equals(result['TTBB']['data'][6]['press'], 793, "Seventh level pressure must be 1030");
-  test.equals(result['TTBB']['data'][6]['t'], 1.8, "Seventh level temp must be 1.8");
-  test.true(Math.abs(result['TTBB']['data'][6]['td'] - (1.8 - 34)) < 0.001, "Seventh level td must be 1.8 - 34");
+  test.equals(result.TTBB.data[6].press, 793, "Seventh level pressure must be 1030");
+  test.equals(result.TTBB.data[6].t, 1.8, "Seventh level temp must be 1.8");
+  test.true(Math.abs(result.TTBB.data[6].td - (1.8 - 34)) < 0.001, "Seventh level td must be 1.8 - 34");
   //Error testing: http://stackoverflow.com/a/32678148/1086633
   //test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
   test.end();
@@ -137,11 +137,11 @@ tape("radiosonde TTBB section decoding", function(test) {
 
 tape("radiosonde PPBB section decoding", function(test) {
   var result = functions.decodeTEMP(tempString);
-  test.equals(result['PPBB']['data'][0]['height'], 0, "First wind value height is 0 (sfc)");
-  test.equals(result['PPBB']['data'][0]['ws'], 3, "First wind value ws is 3");
-  test.equals(result['PPBB']['data'][0]['wd'], 360, "First wind value wd is 360");
-  test.equals(result['PPBB']['data'][1]['height'], 1000 * 0.3048, "Second wind value height is 1000 ft passed to m");
-  test.equals(result['PPBB']['data'][result['PPBB']['data'].length - 1]['height'],
+  test.equals(result.PPBB.data[0].height, 0, "First wind value height is 0 (sfc)");
+  test.equals(result.PPBB.data[0].ws, 3, "First wind value ws is 3");
+  test.equals(result.PPBB.data[0].wd, 360, "First wind value wd is 360");
+  test.equals(result.PPBB.data[1].height, 1000 * 0.3048, "Second wind value height is 1000 ft passed to m");
+  test.equals(result.PPBB.data[result.PPBB.data.length - 1].height,
                 54000 * 0.3048, "Last wind value height is 54000 ft passed to m");
 
   test.end();
@@ -150,32 +150,33 @@ tape("radiosonde CCDD parts section decoding", function(test) {
   //Values from http://tornado.sfsu.edu/geosciences/classes/m400/Lab2_files/RadiosondeCode.html
 
   var result = functions.decodeTEMP(tempStringAllParts);
-  test.equals(result['PPBB']['data'][0]['height'], 0, "First wind value height is 0 (sfc)");
-  test.equals(result['PPDD']['data'][0]['height'], 55000 * 0.3048,
+  test.equals(result.PPBB.data[0].height, 0, "First wind value height is 0 (sfc)");
+  test.equals(result.PPDD.data[0].height, 55000 * 0.3048,
                               "First wind value height is 55000 ft passed to m");
-  test.equals(result['PPDD']['data'][0]['ws'], 25, "First wind speed is 25kt");
-  test.equals(result['PPDD']['data'][0]['wd'], 40, "First wind dir is 40");
-  test.equals(result['PPDD']['data'][result['PPDD']['data'].length - 1]['height'], 75000 * 0.3048,
+  test.equals(result.PPDD.data[0].ws, 25, "First wind speed is 25kt");
+  test.equals(result.PPDD.data[0].wd, 40, "First wind dir is 40");
+  test.equals(result.PPDD.data[result.PPDD.data.length - 1].height, 75000 * 0.3048,
                               "First wind value height is 55000 ft passed to m");
-  test.equals(result['PPDD']['data'][result['PPDD']['data'].length - 1]['ws'], 35,
+  test.equals(result.PPDD.data[result.PPDD.data.length - 1].ws, 35,
                               "Last wind speed is 35kt");
-  test.equals(result['PPDD']['data'][result['PPDD']['data'].length - 1]['wd'], 85,
+  test.equals(result.PPDD.data[result.PPDD.data.length - 1].wd, 85,
                               "Last wind dir is 85");
 
 
-  test.equals(result['TTCC']['data'][0]['press'], 70, "First press is 70");
-  test.equals(result['TTCC']['data'][0]['height'], 18810, "First height is 18810");
+  test.equals(result.TTCC.data[0].press, 70, "First press is 70");
+  test.equals(result.TTCC.data[0].height, 18810, "First height is 18810");
 
-  test.equals(result['TTDD']['data'][0]['press'], 97.8, "First press is 97.8");
-  test.equals(result['TTDD']['data'][0]['t'], -72.5, "First t is -72.5");
-  test.equals(result['TTDD']['data'][0]['td'], -78.5, "First td is -78.5");
+  test.equals(result.TTDD.data[0].press, 97.8, "First press is 97.8");
+  test.equals(result.TTDD.data[0].t, -72.5, "First t is -72.5");
+  test.equals(result.TTDD.data[0].td, -78.5, "First td is -78.5");
 
 
   test.end();
 });
 
 tape("radiosonde TEMP decoding", function(test) {
-  functions.decodeTEMP(tempString);
+  var result = functions.getTEMPData(tempStringBCN);
+  //console.info(result);
 
   test.end();
 });

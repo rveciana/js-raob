@@ -1,4 +1,4 @@
-export default function (tempString) {
+export function decodeTEMP(tempString) {
   var decodedData = {};
 
   var positions = [tempString.indexOf('TTAA'),
@@ -45,6 +45,23 @@ export default function (tempString) {
 
 }
 
+export default function(tempString){
+   var decoded = decodeTEMP(tempString);
+   var outData = {'date': decoded.TTAA.day + " " + decoded.TTAA.hour,
+   'station_code': decoded.TTAA.station_code,
+   'data': []};
+   for (var i=0; i<decoded.TTAA.data.length; i++){
+     outData.data.push(decoded.TTAA.data[i]);
+   }
+   if ('TTBB' in decoded){
+     for (i=0; i<decoded.TTBB.data.length; i++){
+       outData.data.push(decoded.TTBB.data[i]);
+     }
+   }
+
+   console.info(decoded.TTBB.data);
+   return outData;
+}
 
 function decodeTTAA(ttaaString) {
   var decodedTTAA = {};
@@ -110,7 +127,7 @@ function decodeTTAA(ttaaString) {
    } else if (cc == '50' || cc == '40' || cc == '20' || cc == '15' || cc == '10'){
 
      press = parseInt(cc)*10;
-     height = parseInt(ttaaArray[i].substring(2, 5)) * 10;
+     height = 10000 + parseInt(ttaaArray[i].substring(2, 5)) * 10;
 
    } else if (cc =='88'){
      press = parseInt(ttaaArray[i].substring(2, 5));
