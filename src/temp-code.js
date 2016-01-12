@@ -7,7 +7,7 @@ export default function (tempString) {
                     tempString.indexOf('TTDD'),
                     tempString.indexOf('PPBB'),
                     tempString.indexOf('PPDD')];
-  var sorted = positions.slice().sort(function(a,b){return a - b});
+  var sorted = positions.slice().sort(function(a,b){return a - b;});
 
   for (var i = 0; i<sorted.length; i++){
     if (sorted[i] >= 0){
@@ -18,22 +18,22 @@ export default function (tempString) {
 
       switch(section) {
         case 0:
-          decodedData['TTAA'] = decodeTTAA(string);
+          decodedData.TTAA = decodeTTAA(string);
           break;
         case 1:
-          decodedData['TTBB'] = decodeTTBB(string);
+          decodedData.TTBB = decodeTTBB(string);
           break;
         case 2:
-          decodedData['TTCC'] = decodeTTCC(string);
+          decodedData.TTCC = decodeTTCC(string);
           break;
         case 3:
-          decodedData['TTDD'] = decodeTTBB(string);
+          decodedData.TTDD = decodeTTBB(string);
           break;
         case 4:
-          decodedData['PPBB'] = decodePPBB(string);
+          decodedData.PPBB = decodePPBB(string);
           break;
         case 5:
-          decodedData['PPDD'] = decodePPBB(string);
+          decodedData.PPDD = decodePPBB(string);
           break;
       }
 
@@ -43,7 +43,7 @@ export default function (tempString) {
   //console.info(decodedData);
   return decodedData;
 
-};
+}
 
 
 function decodeTTAA(ttaaString) {
@@ -57,19 +57,19 @@ function decodeTTAA(ttaaString) {
   if (ttaaArray[0]!='TTAA')
     throw new Error("String must include TTAA");
 
-  decodedTTAA['day'] = parseInt(ttaaArray[1].substring(0, 2)) - 50;
-  decodedTTAA['hour'] = parseInt(ttaaArray[1].substring(2, 4));
-  decodedTTAA['wind_flag'] = parseInt(ttaaArray[1].substring(4, 5));
-  decodedTTAA['station_code'] = ttaaArray[2];
-  decodedTTAA['max_wind_lvl'] = null;
-  decodedTTAA['tropopause_lvl'] = null;
-  decodedTTAA['data'] = [];
+  decodedTTAA.day = parseInt(ttaaArray[1].substring(0, 2)) - 50;
+  decodedTTAA.hour = parseInt(ttaaArray[1].substring(2, 4));
+  decodedTTAA.wind_flag = parseInt(ttaaArray[1].substring(4, 5));
+  decodedTTAA.station_code = ttaaArray[2];
+  decodedTTAA.max_wind_lvl = null;
+  decodedTTAA.tropopause_lvl = null;
+  decodedTTAA.data = [];
 
   for (var i=3; i + 3 <= ttaaArray.length; i=i+3){
     var press = null;
     var height = null;
     if (ttaaArray[i] == '51515')
-      break
+      break;
     //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttaaArray[i].substring(0, 2);
 
@@ -111,14 +111,14 @@ function decodeTTAA(ttaaString) {
 
      press = parseInt(cc)*10;
      height = parseInt(ttaaArray[i].substring(2, 5)) * 10;
-     
+
    } else if (cc =='88'){
      press = parseInt(ttaaArray[i].substring(2, 5));
-     decodedTTAA['tropopause_lvl'] = press;
+     decodedTTAA.tropopause_lvl = press;
 
    } else if (cc =='77'){
      press = parseInt(ttaaArray[i].substring(2, 5));
-     decodedTTAA['max_wind_lvl'] = press;
+     decodedTTAA.max_wind_lvl = press;
 
    }
 
@@ -126,13 +126,13 @@ function decodeTTAA(ttaaString) {
    var ttdArray = ttd(ttaaArray[i+1]);
    var wswdArray = wswd(ttaaArray[i+2]);
 
-   decodedTTAA['data'].push({'press': press, 'height': height,
+   decodedTTAA.data.push({'press': press, 'height': height,
                               't': ttdArray[0], 'td': ttdArray[1],
                               'ws': wswdArray[0], 'wd': wswdArray[1]});
 
   }
   return decodedTTAA;
-};
+}
 
 
 function decodeTTBB(ttbbString) {
@@ -146,31 +146,31 @@ function decodeTTBB(ttbbString) {
   if (ttbbArray[0]!='TTBB' && ttbbArray[0]!='TTDD')
     throw new Error("String must include TTBB, TTCC or TTDD");
 
-  decodedTTBB['day'] = parseInt(ttbbArray[1].substring(0, 2)) - 50;
-  decodedTTBB['hour'] = parseInt(ttbbArray[1].substring(2, 4));
-  decodedTTBB['wind_flag'] = parseInt(ttbbArray[1].substring(4, 5));
-  decodedTTBB['station_code'] = ttbbArray[2];
-  decodedTTBB['data'] = [];
+  decodedTTBB.day = parseInt(ttbbArray[1].substring(0, 2)) - 50;
+  decodedTTBB.hour = parseInt(ttbbArray[1].substring(2, 4));
+  decodedTTBB.wind_flag = parseInt(ttbbArray[1].substring(4, 5));
+  decodedTTBB.station_code = ttbbArray[2];
+  decodedTTBB.data = [];
 
   for (var i=3; i + 2 <= ttbbArray.length; i=i+2){
-    //var cc = ttbbArray[i].substring(0, 2);
+    var press = null;
     if (ttbbArray[i] == '31313')
-      break
+      break;
     if (ttbbArray[0]=='TTBB'){
-      var press = parseInt(ttbbArray[i].substring(2, 5));
+      press = parseInt(ttbbArray[i].substring(2, 5));
       if (press < 100)
         press = 1000 + press;
     } else {
-      var press = parseFloat(ttbbArray[i].substring(2, 5))/10;
+       press = parseFloat(ttbbArray[i].substring(2, 5))/10;
     }
 
     var ttdArray = ttd(ttbbArray[i+1]);
-    decodedTTBB['data'].push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
+    decodedTTBB.data.push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
 
   }
 
   return decodedTTBB;
-};
+}
 
 function decodeTTCC(ttccString) {
   var decodedTTCC = {};
@@ -183,17 +183,17 @@ function decodeTTCC(ttccString) {
   if (ttccArray[0]!='TTCC')
     throw new Error("String must include TTCC");
 
-  decodedTTCC['day'] = parseInt(ttccArray[1].substring(0, 2)) - 50;
-  decodedTTCC['hour'] = parseInt(ttccArray[1].substring(2, 4));
-  decodedTTCC['wind_flag'] = parseInt(ttccArray[1].substring(4, 5));
-  decodedTTCC['station_code'] = ttccArray[2];
-  decodedTTCC['data'] = [];
+  decodedTTCC.day = parseInt(ttccArray[1].substring(0, 2)) - 50;
+  decodedTTCC.hour = parseInt(ttccArray[1].substring(2, 4));
+  decodedTTCC.wind_flag = parseInt(ttccArray[1].substring(4, 5));
+  decodedTTCC.station_code = ttccArray[2];
+  decodedTTCC.data = [];
 
   for (var i=3; i + 3 <= ttccArray.length; i=i+3){
     var press = null;
     var height = null;
     if (ttccArray[i] == '88999')
-      break
+      break;
     //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttccArray[i].substring(0, 2);
     if (cc == '70'){
@@ -219,12 +219,12 @@ function decodeTTCC(ttccString) {
     var ttdArray = ttd(ttccArray[i+1]);
     var wswdArray = wswd(ttccArray[i+2]);
 
-    decodedTTCC['data'].push({'press': press, 'height': height,
+    decodedTTCC.data.push({'press': press, 'height': height,
                                't': ttdArray[0], 'td': ttdArray[1],
                                'ws': wswdArray[0], 'wd': wswdArray[1]});
   }
   return decodedTTCC;
-};
+}
 
 function decodePPBB(ppbbString){
   var decodedPPBB = {};
@@ -234,14 +234,14 @@ function decodePPBB(ppbbString){
     .trim()
     .split(" ");
 
-  decodedPPBB['data'] = [];
+  decodedPPBB.data = [];
   if (ppbbArray[0]!='PPBB' && ppbbArray[0]!='PPDD')
     throw new Error("String must include PPBB or PPDD");
 
-  decodedPPBB['day'] = parseInt(ppbbArray[1].substring(0, 2)) - 50;
-  decodedPPBB['hour'] = parseInt(ppbbArray[1].substring(2, 4));
-  decodedPPBB['wind_flag'] = parseInt(ppbbArray[1].substring(4, 5));
-  decodedPPBB['station_code'] = ppbbArray[2];
+  decodedPPBB.day = parseInt(ppbbArray[1].substring(0, 2)) - 50;
+  decodedPPBB.hour = parseInt(ppbbArray[1].substring(2, 4));
+  decodedPPBB.wind_flag = parseInt(ppbbArray[1].substring(4, 5));
+  decodedPPBB.station_code = ppbbArray[2];
   for (var i=3; i + 3 <= ppbbArray.length; i++){
     if (ppbbArray[i].substring(0,1) == '9'){
       var baseHgt = parseInt(ppbbArray[i].substring(1,2)) * 10000;
@@ -249,7 +249,7 @@ function decodePPBB(ppbbString){
         var delta = parseInt(ppbbArray[i].substring(j,j+1));
         if (!isNaN(delta)){
           var wswdArray = wswd(ppbbArray[i + j - 1]);
-          decodedPPBB['data'].push({'height': 0.3048 * (1000 * delta + baseHgt),
+          decodedPPBB.data.push({'height': 0.3048 * (1000 * delta + baseHgt),
                           'ws': wswdArray[0], 'wd': wswdArray[1]});
         }
       }
@@ -257,7 +257,7 @@ function decodePPBB(ppbbString){
   }
 
   return decodedPPBB;
-};
+}
 
 /*Decodes a T Td string*/
 function ttd(ttdStr){
@@ -272,7 +272,7 @@ function ttd(ttdStr){
   td = t - td;
 
   return [t, td];
-};
+}
 
 /*Decodes the wind string*/
 function wswd(wswdStr){
@@ -284,4 +284,4 @@ function wswd(wswdStr){
      wd = wd - 1;
   }
   return [ws, wd];
-};
+}
