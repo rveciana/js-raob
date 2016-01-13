@@ -71,9 +71,6 @@ function decodeTTAA(ttaaString) {
     .trim()
     .split(" ");
 
-  if (ttaaArray[0]!='TTAA')
-    throw new Error("String must include TTAA");
-
   decodedTTAA.day = parseInt(ttaaArray[1].substring(0, 2)) - 50;
   decodedTTAA.hour = parseInt(ttaaArray[1].substring(2, 4));
   decodedTTAA.wind_flag = parseInt(ttaaArray[1].substring(4, 5));
@@ -160,9 +157,6 @@ function decodeTTBB(ttbbString) {
     .trim()
     .split(" ");
 
-  if (ttbbArray[0]!='TTBB' && ttbbArray[0]!='TTDD')
-    throw new Error("String must include TTBB, TTCC or TTDD");
-
   decodedTTBB.day = parseInt(ttbbArray[1].substring(0, 2)) - 50;
   decodedTTBB.hour = parseInt(ttbbArray[1].substring(2, 4));
   decodedTTBB.wind_flag = parseInt(ttbbArray[1].substring(4, 5));
@@ -196,9 +190,6 @@ function decodeTTCC(ttccString) {
     .replace(/\s\s+/g, ' ')
     .trim()
     .split(" ");
-
-  if (ttccArray[0]!='TTCC')
-    throw new Error("String must include TTCC");
 
   decodedTTCC.day = parseInt(ttccArray[1].substring(0, 2)) - 50;
   decodedTTCC.hour = parseInt(ttccArray[1].substring(2, 4));
@@ -252,8 +243,6 @@ function decodePPBB(ppbbString){
     .split(" ");
 
   decodedPPBB.data = [];
-  if (ppbbArray[0]!='PPBB' && ppbbArray[0]!='PPDD')
-    throw new Error("String must include PPBB or PPDD");
 
   decodedPPBB.day = parseInt(ppbbArray[1].substring(0, 2)) - 50;
   decodedPPBB.hour = parseInt(ppbbArray[1].substring(2, 4));
