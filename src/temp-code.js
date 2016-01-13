@@ -40,7 +40,6 @@ export function decodeTEMP(tempString) {
     }
   }
 
-  //console.info(decodedData);
   return decodedData;
 
 }
@@ -59,7 +58,7 @@ export default function(tempString){
      }
    }
 
-   console.info(decoded.TTBB.data);
+   //console.info(decoded.TTBB.data);
    return outData;
 }
 
@@ -219,7 +218,7 @@ function decodeTTCC(ttccString) {
     } else if (cc == '30' || cc == '20'){
       press = parseInt(cc);
       height = 20000 + 10 * parseInt(ttccArray[i].substring(2, 5));
-    } else if (cc == '10'){
+    } else {
       press = parseInt(cc);
       height = 30000 + 10 * parseInt(ttccArray[i].substring(2, 5));
     }

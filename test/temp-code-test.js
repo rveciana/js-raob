@@ -61,8 +61,8 @@ var tempStringAllParts = ` TTAA 67121 72214 99019 24003 36003 00187 23803 08511 
 14001 18004 9305/ 09501 29002 94039 32513 32013 01017 9504/ 02019
 03024=
 
- TTCC 67125 72214 70881 66757 09520 50087 60358 08536 88999
-77999=
+ TTCC 67125 72214 70881 66757 09520 50087 60358 08536 30187 60358
+ 08536 20687 60358 08536 10287 60358 08536 88999 77999=
 
  TTDD 6712/ 72214 11978 72556 22838 71156 33792 67157 44339
 54163=
@@ -92,7 +92,16 @@ tape("radiosonde TTAA section decoding", function(test) {
   test.equals(result.TTAA.tropopause_lvl, 192, "Tropopause pressure must be 192");
   test.equals(result.TTAA.max_wind_lvl, 182, "max_wind pressure must be 182");
 
+  //Covering all the casses in height && Pressure
+  result = functions.decodeTEMP(tempString.replace('99030','99930'));
+  test.equals(result.TTAA.data[0].press, 930, "Pressure must be 930");
 
+  result = functions.decodeTEMP(tempString.replace('00263','00550'));
+  test.equals(result.TTAA.data[1].press, 1000, "Pressure must be 1000");
+  test.equals(result.TTAA.data[1].height, -50, "Height is below the sea level: -50m");
+
+  result = functions.decodeTEMP(tempString.replace('70138','70838'));
+  test.equals(result.TTAA.data[4].height, 2838, "700mb height = 2838");
 
   //Check winds
   test.equals(result.TTAA.data[0].wd, 330, "SFC wind dir must be 330");
@@ -165,6 +174,22 @@ tape("radiosonde CCDD parts section decoding", function(test) {
 
   test.equals(result.TTCC.data[0].press, 70, "First press is 70");
   test.equals(result.TTCC.data[0].height, 18810, "First height is 18810");
+
+  test.equals(result.TTCC.data[1].press, 50, "Second level press is 50");
+  test.equals(result.TTCC.data[1].height, 20870, "Second level height is 20870");
+
+  test.equals(result.TTCC.data[2].press, 30, "Third level press is 30");
+  test.equals(result.TTCC.data[2].height, 21870, "Third level height is 21870");
+
+  test.equals(result.TTCC.data[3].press, 20, "Fourth level press is 20");
+  test.equals(result.TTCC.data[3].height, 26870, "Fourth level height is 26870");
+
+  test.equals(result.TTCC.data[4].press, 10, "Fifth level press is 10");
+  test.equals(result.TTCC.data[4].height, 32870, "Fifth level height is 32870");
+
+  //TTCC check all casses
+  result = functions.decodeTEMP(tempStringAllParts.replace('50087','50500'));
+  test.equals(result.TTCC.data[1].height, 15000, "50mb height is 15000");
 
   test.equals(result.TTDD.data[0].press, 97.8, "First press is 97.8");
   test.equals(result.TTDD.data[0].t, -72.5, "First t is -72.5");
