@@ -168,6 +168,8 @@ function decodeTTBB(ttbbString) {
     }
 
     var ttdArray = ttd(ttbbArray[i+1]);
+    console.info(ttbbArray[i] + ' ' + ttbbArray[i+1]);
+    console.info('press ' + press + ' t ' + ttdArray[0] + ' td '+ ttdArray[1]);
     decodedTTBB.data.push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
 
   }
@@ -257,7 +259,7 @@ function ttd(ttdStr){
    }
   var td = parseFloat(ttdStr.substring(3, 5));
      if (td<=50){
-       td = t - td/10;
+       td = td/10;
      } else {
        td = td - 50;
      }
