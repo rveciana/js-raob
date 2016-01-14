@@ -7,8 +7,8 @@ export function decodeTEMP(tempString) {
                     tempString.indexOf('TTDD'),
                     tempString.indexOf('PPBB'),
                     tempString.indexOf('PPDD')];
-  var sorted = positions.slice().sort(function(a, b)
-    {return a - b;});
+
+  var sorted = positions.slice().sort(function(a, b){return a - b;});
 
   for (var i = 0; i<sorted.length; i++){
     if (sorted[i] >= 0){
@@ -65,11 +65,7 @@ export default function(tempString){
 
 function decodeTTAA(ttaaString) {
   var decodedTTAA = {};
-  var ttaaArray = ttaaString
-    .replace(/(?:\r\n|\r|\n)/g, ' ')
-    .replace(/\s\s+/g, ' ')
-    .trim()
-    .split(" ");
+  var ttaaArray = arrayFromString(ttaaString);
 
   decodedTTAA.day = parseInt(ttaaArray[1].substring(0, 2), 10) - 50;
   decodedTTAA.hour = parseInt(ttaaArray[1].substring(2, 4), 10);
@@ -153,11 +149,7 @@ function decodeTTAA(ttaaString) {
 
 function decodeTTBB(ttbbString) {
   var decodedTTBB = [];
-  var ttbbArray = ttbbString
-    .replace(/(?:\r\n|\r|\n)/g, ' ')
-    .replace(/\s\s+/g, ' '," ")
-    .trim()
-    .split(" ");
+  var ttbbArray = arrayFromString(ttbbString);
 
   decodedTTBB.day = parseInt(ttbbArray[1].substring(0, 2), 10) - 50;
   decodedTTBB.hour = parseInt(ttbbArray[1].substring(2, 4), 10);
@@ -185,11 +177,7 @@ function decodeTTBB(ttbbString) {
 
 function decodeTTCC(ttccString) {
   var decodedTTCC = {};
-  var ttccArray = ttccString
-    .replace(/(?:\r\n|\r|\n)/g, ' ')
-    .replace(/\s\s+/g, ' ')
-    .trim()
-    .split(" ");
+  var ttccArray = arrayFromString(ttccString);
 
   decodedTTCC.day = parseInt(ttccArray[1].substring(0, 2), 10) - 50;
   decodedTTCC.hour = parseInt(ttccArray[1].substring(2, 4), 10);
@@ -236,11 +224,7 @@ function decodeTTCC(ttccString) {
 
 function decodePPBB(ppbbString){
   var decodedPPBB = {};
-  var ppbbArray = ppbbString
-    .replace(/(?:\r\n|\r|\n)/g, ' ')
-    .replace(/\s\s+/g, ' '," ")
-    .trim()
-    .split(" ");
+  var ppbbArray = arrayFromString(ppbbString);
 
   decodedPPBB.data = [];
 
@@ -292,4 +276,12 @@ function wswd(wswdStr){
      wd = wd - 1;
   }
   return [ws, wd];
+}
+
+/*Cleans and returns the data array from a string*/
+function arrayFromString(sectionString){
+  return sectionString.replace(/(?:\r\n|\r|\n)/g, ' ')
+  .replace(/\s\s+/g, ' ')
+  .trim()
+  .split(" ");
 }
