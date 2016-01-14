@@ -78,7 +78,7 @@ function decodeTTAA(ttaaString) {
   for (var i=3; i + 3 <= ttaaArray.length; i=i+3){
     var press = null;
     var height = null;
-    if (ttaaArray[i] === '51515'){break;}
+    if (ttaaArray[i] === '51515' || ttaaArray[i] === '31313'){break;}
 
     //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttaaArray[i].substring(0, 2);
