@@ -7,7 +7,8 @@ export function decodeTEMP(tempString) {
                     tempString.indexOf('TTDD'),
                     tempString.indexOf('PPBB'),
                     tempString.indexOf('PPDD')];
-  var sorted = positions.slice().sort(function(a,b){return a - b;});
+  var sorted = positions.slice().sort(function(a, b)
+    {return a - b;});
 
   for (var i = 0; i<sorted.length; i++){
     if (sorted[i] >= 0){
@@ -81,55 +82,57 @@ function decodeTTAA(ttaaString) {
   for (var i=3; i + 3 <= ttaaArray.length; i=i+3){
     var press = null;
     var height = null;
-    if (ttaaArray[i] == '51515')
-      break;
+    if (ttaaArray[i] === '51515'){break;}
+
     //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttaaArray[i].substring(0, 2);
 
-    if (cc =='99'){
+    if (cc ==='99'){
 
       press = parseInt(ttaaArray[i].substring(2, 5));
-      if (press < 200)
-        press = press + 1000;
+      if (press < 200){ press = press + 1000; }
 
-   } else if (cc == '00'){
+   } else if (cc === '00'){
      press = 1000;
      height = parseInt(ttaaArray[i].substring(2, 5));
-     if (height >= 500)
-        height = -1 * (height - 500);
-   } else if (cc == '92'){
+     if (height >= 500){
+       height = -1 * (height - 500);
+     }
+   } else if (cc === '92'){
      press = 925;
      height = parseInt(ttaaArray[i].substring(2, 5));
-   } else if (cc == '85'){
+   } else if (cc === '85'){
 
      press = 850;
      height = 1000 + parseInt(ttaaArray[i].substring(2, 5));
 
-   } else if (cc == '70'){
+   } else if (cc === '70'){
       press = 700;
       height = parseInt(ttaaArray[i].substring(2, 5));
-      if (height > 700)
-         height = height + 2000;
-      else
+      if (height > 700){
+        height = height + 2000;
+      } else {
         height = height + 3000;
+      }
 
-   } else if (cc == '30' || cc == '25'){
+   } else if (cc === '30' || cc === '25'){
      press = parseInt(cc)*10;
      height = parseInt(ttaaArray[i].substring(2, 5));
-     if (height < 500)
-        height = 10000 + (height * 10);
-     else
-     height = height * 10;
-   } else if (cc == '50' || cc == '40' || cc == '20' || cc == '15' || cc == '10'){
+     if (height < 500) {
+       height = 10000 + (height * 10);
+     } else {
+       height = height * 10;
+     }
+   } else if (cc === '50' || cc === '40' || cc === '20' || cc === '15' || cc === '10'){
 
      press = parseInt(cc)*10;
      height = 10000 + parseInt(ttaaArray[i].substring(2, 5)) * 10;
 
-   } else if (cc =='88'){
+   } else if (cc ==='88'){
      press = parseInt(ttaaArray[i].substring(2, 5));
      decodedTTAA.tropopause_lvl = press;
 
-   } else if (cc =='77'){
+   } else if (cc ==='77'){
      press = parseInt(ttaaArray[i].substring(2, 5));
      decodedTTAA.max_wind_lvl = press;
 
@@ -164,12 +167,10 @@ function decodeTTBB(ttbbString) {
 
   for (var i=3; i + 2 <= ttbbArray.length; i=i+2){
     var press = null;
-    if (ttbbArray[i] == '31313')
-      break;
-    if (ttbbArray[0]=='TTBB'){
+    if (ttbbArray[i] === '31313'){ break; }
+    if (ttbbArray[0]==='TTBB'){
       press = parseInt(ttbbArray[i].substring(2, 5));
-      if (press < 100)
-        press = 1000 + press;
+      if (press < 100){ press = 1000 + press;}
     } else {
        press = parseFloat(ttbbArray[i].substring(2, 5))/10;
     }
@@ -199,23 +200,23 @@ function decodeTTCC(ttccString) {
   for (var i=3; i + 3 <= ttccArray.length; i=i+3){
     var press = null;
     var height = null;
-    if (ttccArray[i] == '88999')
-      break;
+    if (ttccArray[i] === '88999'){break;}
     //http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html#HHH
     var cc = ttccArray[i].substring(0, 2);
-    if (cc == '70'){
+    if (cc === '70'){
       press = 70;
       height = 10000 + 10 * parseInt(ttccArray[i].substring(2, 5));
 
-    } else if (cc == '50'){
+    } else if (cc === '50'){
       press = 50;
       height = parseInt(ttccArray[i].substring(2, 5));
-      if (height < 500)
+      if (height < 500){
         height = 20000 + 10 * height;
-      else
+      } else {
         height = 10000 + 10 * height;
+      }
 
-    } else if (cc == '30' || cc == '20'){
+    } else if (cc === '30' || cc === '20'){
       press = parseInt(cc);
       height = 20000 + 10 * parseInt(ttccArray[i].substring(2, 5));
     } else {
@@ -248,7 +249,7 @@ function decodePPBB(ppbbString){
   decodedPPBB.wind_flag = parseInt(ppbbArray[1].substring(4, 5));
   decodedPPBB.station_code = ppbbArray[2];
   for (var i=3; i + 3 <= ppbbArray.length; i++){
-    if (ppbbArray[i].substring(0,1) == '9'){
+    if (ppbbArray[i].substring(0,1) === '9'){
       var baseHgt = parseInt(ppbbArray[i].substring(1,2)) * 10000;
       for (var j=2; j<=4; j++){
         var delta = parseInt(ppbbArray[i].substring(j,j+1));
@@ -267,13 +268,15 @@ function decodePPBB(ppbbString){
 /*Decodes a T Td string*/
 function ttd(ttdStr){
   var t = parseFloat(ttdStr.substring(0, 3))/10;
-  if ((parseInt(ttdStr.substring(0, 3)) % 2) == 1)
+  if ((parseInt(ttdStr.substring(0, 3)) % 2) === 1){
      t = t * -1;
+   }
   var td = parseFloat(ttdStr.substring(3, 5));
-     if (td<=50)
+     if (td<=50){
        td = t - td/10;
-     else
+     } else {
        td = td - 50;
+     }
   td = t - td;
 
   return [t, td];
@@ -284,7 +287,7 @@ function wswd(wswdStr){
   var wd = parseInt(wswdStr.substring(0, 3));
   var ws = parseInt(wswdStr.substring(3, 5));
 
-  if (wd%5 == 1){
+  if (wd%5 === 1){
      ws = ws + 100;
      wd = wd - 1;
   }
