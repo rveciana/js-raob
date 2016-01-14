@@ -52,12 +52,12 @@ export default function(tempString){
    'data': []};
    for (var i=0; i<decoded.TTAA.data.length; i++){
      outData.data.push(decoded.TTAA.data[i]);
-   }
+   }/*
    if ('TTBB' in decoded){
      for (i=0; i<decoded.TTBB.data.length; i++){
        outData.data.push(decoded.TTBB.data[i]);
      }
-   }
+   }*/
 
    //console.info(decoded.TTBB.data);
    return outData;
@@ -69,7 +69,7 @@ function decodeTTAA(ttaaString) {
 
   decodedTTAA.day = parseInt(ttaaArray[1].substring(0, 2), 10) - 50;
   decodedTTAA.hour = parseInt(ttaaArray[1].substring(2, 4), 10);
-  decodedTTAA.wind_flag = parseInt(ttaaArray[1].substring(4, 5), 10);
+  decodedTTAA.top_lvl = parseInt(ttaaArray[1].substring(4, 5), 10);
   decodedTTAA.station_code = ttaaArray[2];
   decodedTTAA.max_wind_lvl = null;
   decodedTTAA.tropopause_lvl = null;
@@ -137,7 +137,6 @@ function decodeTTAA(ttaaString) {
 
    var ttdArray = ttd(ttaaArray[i+1]);
    var wswdArray = wswd(ttaaArray[i+2]);
-
    decodedTTAA.data.push({'press': press, 'height': height,
                               't': ttdArray[0], 'td': ttdArray[1],
                               'ws': wswdArray[0], 'wd': wswdArray[1]});
@@ -274,10 +273,10 @@ function ttd(ttdStr){
 function wswd(wswdStr){
   var wd = parseInt(wswdStr.substring(0, 3), 10);
   var ws = parseInt(wswdStr.substring(3, 5), 10);
-
-  if (wd%5 === 1){
-     ws = ws + 100;
-     wd = wd - 1;
+  //Strong wind
+  if (wd%5 !== 0){
+     ws = ws + 100 * (wd%5);
+     wd = wd - (wd%5);
   }
   return [ws, wd];
 }

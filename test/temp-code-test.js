@@ -77,7 +77,7 @@ tape("radiosonde TTAA section decoding", function(test) {
   var result = functions.decodeTEMP(tempString);
   test.equals(result.TTAA.day, 31, "Day must be 31");
   test.equals(result.TTAA.hour, 0, "Hour must be 00UTC");
-  test.equals(result.TTAA.wind_flag, 1, "Wind flag must be 1");
+  test.equals(result.TTAA.top_lvl, 1, "Top level must be 1");
   test.equals(result.TTAA.station_code, "72518","Station code must be 72518 at Albany, New York");
 
 
@@ -107,9 +107,14 @@ tape("radiosonde TTAA section decoding", function(test) {
   //Check winds
   test.equals(result.TTAA.data[0].wd, 330, "SFC wind dir must be 330");
   test.equals(result.TTAA.data[0].ws, 4, "SFC wind speed must be 4");
+
   //Strong wind
   result = functions.decodeTEMP(tempString.replace('33004','33104'));
   test.equals(result.TTAA.data[0].ws, 104, "SFC wind speed must be 104");
+  test.equals(result.TTAA.data[0].wd, 330, "SFC wind dir must be 330");
+  result = functions.decodeTEMP(tempString.replace('33004','33204'));
+  test.equals(result.TTAA.data[0].ws, 204, "SFC wind speed must be 204");
+  test.equals(result.TTAA.data[0].wd, 330, "SFC wind dir must be 330");
 
   //Check noData
   result = functions.decodeTEMP(tempString.replace('10464','////').replace('34016','////'));
@@ -213,7 +218,7 @@ tape("radiosonde CCDD parts section decoding", function(test) {
 
 tape("radiosonde TEMP decoding", function(test) {
   var result = functions.getTEMPData(tempStringBCN);
-  //console.info(result);
+  console.info(result);
 
   test.end();
 });
