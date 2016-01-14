@@ -5,9 +5,9 @@ env:
 - CXX=g++-4.8
 before_script:
 - npm install -g istanbul
-- npm install -g coveralls
+- npm install coveralls
 after_success:
-- istanbul cover --report lcovonly `find test -name '*-test.js'` && cat ./coverage/lcov.info | coveralls.js
+- istanbul cover --report lcovonly `find test -name '*-test.js'` && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 addons:
   apt:
     sources:
