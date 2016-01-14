@@ -2,7 +2,7 @@
 
 This package can decode radiosonde data in different formats and put it in a common JSON format, so graphics can be created easily. It also calculates indexes.
 
-[![Build Status](https://travis-ci.org/rveciana/js-raob.svg?branch=master)](https://travis-ci.org/rveciana/js-raob)
+[![Build Status](https://travis-ci.org/rveciana/js-raob.svg?branch=master)](https://travis-ci.org/rveciana/js-raob) [![Coverage Status](https://coveralls.io/repos/rveciana/js-raob/badge.svg?branch=master&service=github)](https://coveralls.io/github/rveciana/js-raob?branch=master)
 
 ## Installing
 
