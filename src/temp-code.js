@@ -159,7 +159,10 @@ function decodeTTBB(ttbbString) {
 
   for (var i=3; i + 2 <= ttbbArray.length; i=i+2){
     var press = null;
-    if (ttbbArray[i] === '31313'){ break; }
+    //Some docs say that the stop signal is 31313, but it can be 21212.
+    if (ttbbArray[i].substring(0, 1) !== ttbbArray[i].substring(1, 2)){
+        break;
+    }
     if (ttbbArray[0]==='TTBB'){
       press = parseInt(ttbbArray[i].substring(2, 5), 10);
       if (press < 100){ press = 1000 + press;}
@@ -168,8 +171,7 @@ function decodeTTBB(ttbbString) {
     }
 
     var ttdArray = ttd(ttbbArray[i+1]);
-    console.info(ttbbArray[i] + ' ' + ttbbArray[i+1]);
-    console.info('press ' + press + ' t ' + ttdArray[0] + ' td '+ ttdArray[1]);
+
     decodedTTBB.data.push({'press': press, 't': ttdArray[0], 'td': ttdArray[1]});
 
   }

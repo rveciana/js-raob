@@ -5,7 +5,8 @@
 //igra2
 //ftp://ftp.ncdc.noaa.gov/pub/data/igra/v2beta/igra2-readme.txt
 
-//http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html
+//http://weather.unisys.com/wxp/Appendices/Formats/TEMP.html (The ebst explained)
+//http://meteorologytraining.tpub.com/14269/css/14269_178.htm Explanation about 21212 signal
 var tape = require("tape"),
     functions = require("../");
 
@@ -139,8 +140,19 @@ tape("radiosonde TTBB section decoding", function(test) {
   test.equals(result.TTBB.data[6].press, 793, "Seventh level pressure must be 1030");
   test.equals(result.TTBB.data[6].t, 1.8, "Seventh level temp must be 1.8");
   test.true(Math.abs(result.TTBB.data[6].td - (1.8 - 34)) < 0.001, "Seventh level td must be 1.8 - 34");
-  //Error testing: http://stackoverflow.com/a/32678148/1086633
-  //test.throws(()=>functions.decodeTTBB(ttbbString.replace("TTBB", "ERROR")), Error, "Bad headers");
+
+  result = functions.decodeTEMP(tempStringBCN);
+  test.equals(result.TTBB.data[0].press, 1012, "First level pressure must be 1012");
+  test.equals(result.TTBB.data[13].press, 520, "Checking 520mb level");
+  test.equals(result.TTBB.data[13].t, -12.9, "Checking 520mb level t = -12.9");
+  test.true(Math.abs(result.TTBB.data[13].td - (-31.9)) < 0.001, "Checking 520mb level t = -31.9");
+
+  test.equals(result.TTBB.data[15].press, 412, "Checking 412mb level");
+  test.equals(result.TTBB.data[15].t, -27.9, "Checking 412mb level t = -27.9");
+  test.true(Math.abs(result.TTBB.data[15].td - (-32.7)) < 0.001, "Checking 412mb level t = -32.7");
+
+  test.equals(result.TTBB.data[result.TTBB.data.length - 1].press, 106,
+          "Checking last level, which must be 106");
   test.end();
 });
 
