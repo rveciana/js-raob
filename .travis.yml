@@ -7,7 +7,7 @@ before_script:
 - npm install -g istanbul
 - npm install coveralls
 after_success:
-- istanbul cover --report lcovonly `find test -name '*-test.js'` && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+- istanbul cover --report lcovonly ./node_modules/tape/bin/tape './test/*-test.js' && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 addons:
   apt:
     sources:
