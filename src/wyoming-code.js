@@ -7,14 +7,15 @@ export default function(wyomingString){
     .trim()
     .split(" ");
     if (lineArray.length === 11 && lineArray.reduce(areNumbers)){
-      cleanDataArray.push(lineArray);
+      cleanDataArray.push(lineArray.map(function(element){
+        return parseFloat(element);
+      }));
     }
 
     }
-    console.info(cleanDataArray);
-    return 2;
+    return cleanDataArray;
 }
 
 function areNumbers(previousValue, currentValue) {
-    return !isNaN(currentValue) && (previousValue || previousValue === 0);
+    return !isNaN(currentValue) && (previousValue);
 }
