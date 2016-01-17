@@ -2,12 +2,18 @@ var tape = require("tape"),
     fs = require('fs'),
     functions = require("../");
 
-
+  
   tape("radiosonde indexes calculations", function(test) {
     var contents = fs.readFileSync('./test/exampleBCN.txt').toString();
     var raobData = functions.getWyomingData(contents);
     var indexesInst = new functions.Indexes(raobData);
     test.equals(indexesInst.showalter(), 12.91, "Showalter index is 12.91");
+    test.equals(indexesInst.indexes.showalter, 12.91, "Showalter index is field");
+    test.equals(indexesInst.vtot(), 22.7, "VTOT index is 22.7");
+    test.equals(indexesInst.indexes.vtot, 22.7, "VTOT index is field");
+    test.equals(indexesInst.ttot(), 29.4, "TTOT index is 29.4");
+    test.equals(indexesInst.indexes.ttot, 29.4, "TTOT index is field");
+
 
     test.end();
   });
@@ -20,6 +26,14 @@ tape("radiosonde pressure values with getValuesPress", function(test) {
   test.deepEqual(indexesInst.getValuesPress(500),
   [500.0, 5760, -15.7, -23.7, 50, 1.14, 275, 26, 313.8, 317.8, 314.1],
   "When the pressure exists, return the direct values");
+
+  test.deepEqual(indexesInst.indexedData[500],
+  [500.0, 5760, -15.7, -23.7, 50, 1.14, 275, 26, 313.8, 317.8, 314.1],
+  "Consulted pressure level must be saved");
+
+  test.deepEqual(indexesInst.getValuesPress(500),
+  [500.0, 5760, -15.7, -23.7, 50, 1.14, 275, 26, 313.8, 317.8, 314.1],
+  "When asked again, return the stored values");
 
   raobData = functions.getWyomingData(contents
     .replace("500.0   5760  -15.7  -23.7     50   1.14    275     26  313.8  317.8  314.1\n",""));
