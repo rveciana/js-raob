@@ -2,13 +2,24 @@ var tape = require("tape"),
     fs = require('fs'),
     functions = require("../");
 
-  
+
+  tape("lifting formulas", function(test) {
+    var contents = fs.readFileSync('./test/exampleBCN.txt').toString();
+    var raobData = functions.getWyomingData(contents);
+    var indexesInst = new functions.Indexes(raobData);
+    console.info(indexesInst.liftParcel(850, 500));
+    test.end();
+  });
+
   tape("radiosonde indexes calculations", function(test) {
     var contents = fs.readFileSync('./test/exampleBCN.txt').toString();
     var raobData = functions.getWyomingData(contents);
     var indexesInst = new functions.Indexes(raobData);
-    test.equals(indexesInst.showalter(), 12.91, "Showalter index is 12.91");
-    test.equals(indexesInst.indexes.showalter, 12.91, "Showalter index is field");
+    test.true(Math.abs(indexesInst.showalter() - 12.91) < 0.1,
+                                    "Showalter index is 12.91");
+    test.equals(indexesInst.indexes.showalter, indexesInst.showalter(),
+                                    "Showalter index is field");
+
     test.equals(indexesInst.vtot(), 22.7, "VTOT index is 22.7");
     test.equals(indexesInst.indexes.vtot, 22.7, "VTOT index is field");
     test.equals(indexesInst.ttot(), 29.4, "TTOT index is 29.4");
