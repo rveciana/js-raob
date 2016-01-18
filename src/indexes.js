@@ -48,7 +48,8 @@ Indexes.prototype.ttot = function(){
 
 Indexes.prototype.liftParcel = function(iniLevel, endLevel) {
   /*
-
+  Lifts a parcel using the dry adiabatic first and the wet one after the lcl
+ http://www.csgnetwork.com/lclcalc.html
 */
   var kelvin = 273.15;
   var iniData = this.getValuesPress(iniLevel);
