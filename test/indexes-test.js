@@ -4,11 +4,6 @@ var tape = require("tape"),
 
 
   tape("thermodynamics formulas", function(test) {
-    /*
-    var contents = fs.readFileSync('./test/exampleBCN.txt').toString();
-    var raobData = functions.getWyomingData(contents);
-    var indexesInst = new functions.Indexes(raobData);
-    console.info(indexesInst.liftParcel(850, 500));*/
     //As calculated here: http://www.shodor.org/metweb/session3/lcl1calc.html
     var lcl = functions.findLCL(1000, 15, 10);
     test.true(Math.abs(lcl.tlcl - 8.876)< 0.01, "t LCL level from 1000 = 8.876");
@@ -33,8 +28,35 @@ var tape = require("tape"),
     test.equals(indexesInst.indexes.vtot, 22.7, "VTOT index is field");
     test.equals(indexesInst.ttot(), 29.4, "TTOT index is 29.4");
     test.equals(indexesInst.indexes.ttot, 29.4, "TTOT index is field");
+    test.true(Math.abs(indexesInst.sweat()- 71.99) < 0.1, "SWEAT index is 71.99");
+    test.true(Math.abs(indexesInst.sweat()- 71.99) < 0.1, "SWEAT index is field");
+    //Special cases: wind direction @500hPa is out of the range:
+    indexesInst.indexedData['850'][6] = 135;
+    indexesInst.indexedData['500'][6] = 330;
+    test.true(Math.abs(indexesInst.sweat()- 71.99) < 0.1,
+    "SWEAT index is still 71.99 when dir850 is in condition");
 
+    indexesInst.indexedData['850'][6] = 340;
+    indexesInst.indexedData['500'][6] = 330;
+    test.true(Math.abs(indexesInst.sweat()- 71.99) < 0.1,
+    "SWEAT index is still 71.99 if dir850 < dir500");
 
+    indexesInst.indexedData['850'][6] = 255;
+    indexesInst.indexedData['500'][6] = 110;
+    test.true(Math.abs(indexesInst.sweat()- 71.99) < 0.1,
+    "SWEAT index is still 71.99 if spd are both high");
+
+    indexesInst.indexedData['850'][7] = 10;
+    test.true(Math.abs(indexesInst.sweat()- 46) < 0.1,
+    "SWEAT index is changed when all conditions in shear are false");
+    /*
+    //2007Topeka tornado index:
+    contents = fs.readFileSync('./test/example_topeka2007_tornadof5.txt').toString();
+    raobData = functions.getWyomingData(contents);
+    indexesInst = new functions.Indexes(raobData);
+    console.info(indexesInst.sweat());
+    test.true(Math.abs(indexesInst.sweat()- 302.56) < 0.1, "SWEAT index is 302.56");
+    */
     test.end();
   });
 

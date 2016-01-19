@@ -46,6 +46,28 @@ Indexes.prototype.ttot = function(){
   return this.indexes.ttot;
 };
 
+Indexes.prototype.sweat = function(){
+  //Formula with all conditions is here: http://glossary.ametsoc.org/wiki/Stability_index
+  //Better explained here: http://www.theweatherprediction.com/habyhints/304/
+  var values500 = this.getValuesPress(500);
+  var values850 = this.getValuesPress(850);
+  var term2 = Math.max(this.ttot()-49, 0);
+  var tdterm = Math.max(12 * values850[3], 0);
+  var shear = 0;
+  if ((values850[6]>=130 && values850[6] <=250) ||
+      (values500[6]>=210 && values500[6] <=310) ||
+      (values500[6]-values850[6] > 0) ||
+      (values850[7]>=15 && values500[7]>=15)){
+    shear = 0;
+  } else {
+    shear = Math.max(125 * (Math.sin(( values500[6] - values850[6])*Math.PI/180) + 0.2), 0);
+  }
+  this.indexes.sweat = tdterm + 20 * term2 + 2 * values850[7] + values500[7] + shear;
+
+  return this.indexes.sweat;
+};
+
+
 Indexes.prototype.liftParcel = function(iniLevel, endLevel) {
   /*
   Lifts a parcel using the dry adiabatic first and the wet one after the lcl
