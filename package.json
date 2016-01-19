@@ -19,7 +19,7 @@
     "prepublish": "npm run test && uglifyjs build/js-raob.js -c -m -o build/js-raob.min.js && rm -f build/js-raob.zip && zip -j build/js-raob.zip -- LICENSE README.md build/js-raob.js build/js-raob.min.js"
   },
   "devDependencies": {
-    "faucet": "0.0",
+    "faucet": "0.0.1",
     "rollup": "0.25.0",
     "tape": "4",
     "uglify-js": "2"

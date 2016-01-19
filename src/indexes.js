@@ -29,7 +29,6 @@ Indexes.prototype.getValuesPress = function(press) {
 
 Indexes.prototype.showalter = function() {
   var values500 = this.getValuesPress(500);
-
   this.indexes.showalter = values500[2] - this.liftParcel(850, 500);
   return this.indexes.showalter;
 };
@@ -51,19 +50,26 @@ Indexes.prototype.sweat = function(){
   //Better explained here: http://www.theweatherprediction.com/habyhints/304/
   var values500 = this.getValuesPress(500);
   var values850 = this.getValuesPress(850);
-  var term2 = Math.max(this.ttot()-49, 0);
+  var term2 = 20 * Math.max(this.ttot()-49, 0);
   var tdterm = Math.max(12 * values850[3], 0);
   var shear = 0;
   if ((values850[6]>=130 && values850[6] <=250) ||
       (values500[6]>=210 && values500[6] <=310) ||
-      (values500[6]-values850[6] > 0) ||
-      (values850[7]>=15 && values500[7]>=15)){
+      (values500[6]-values850[6] > 0) ){
+      //|| (values850[7]>=15 && values500[7]>=15)){
     shear = 0;
+    console.info("NO SHEAR");
   } else {
+    console.info("SHEAR");
     shear = Math.max(125 * (Math.sin(( values500[6] - values850[6])*Math.PI/180) + 0.2), 0);
   }
-  this.indexes.sweat = tdterm + 20 * term2 + 2 * values850[7] + values500[7] + shear;
 
+  this.indexes.sweat = tdterm + term2 + 2 * values850[7] + values500[7] + shear;
+
+  console.info(this.indexes.sweat);
+  console.info(shear);
+  console.info((values850[6]>=130 && values850[6] <=250));
+  console.info( 125 * (Math.sin(( values500[6] - values850[6])*Math.PI/180) + 0.2) );
   return this.indexes.sweat;
 };
 
