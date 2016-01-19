@@ -51,31 +51,31 @@ Indexes.prototype.liftParcel = function(iniLevel, endLevel) {
   Lifts a parcel using the dry adiabatic first and the wet one after the lcl
  http://www.csgnetwork.com/lclcalc.html
 */
-  var kelvin = 273.15;
   var iniData = this.getValuesPress(iniLevel);
-  var p0 = iniData[0];
-  var t0 = iniData[2];
-  var td0 = iniData[3];
-
-  var tlcl = (((1/(1/(td0 + kelvin - 56) + Math.log ((t0+kelvin)/(td0+kelvin))/800)) + 56) ) -kelvin;
-  //var tlcl = (((1/(1/(iniLevel[3] + this.c2k - 56) + Math.log ((iniLevel[2]+this.c2k)/(iniLevel[3]+this.c2k))/800)) + 56) ) - iniLevel[2];
-  var plcl = (p0 * Math.pow ( ( (tlcl + kelvin) / (t0+kelvin)), (7/2) ) );
+  var lcl = findLCL(iniData[0], iniData[2], iniData[3]);
 
 //TODO: What to do if PLCL isn't reached
     var deltap = 0.1;
-    var p = plcl;
-    var t = tlcl;
+    var p = lcl.plcl;
+    var t = lcl.tlcl;
     while(p>=endLevel){
-      t = t - this.wetAdiabaticSlope(t,p-(deltap/2))*100*deltap;
+      t = t - wetAdiabaticSlope(t,p-(deltap/2))*100*deltap;
       p = p - deltap;
     }
 
   return t;
 };
 
-Indexes.prototype.wetAdiabaticSlope = function(t,p){
-  var tk=t+273.15;
-  var es = 6.112*Math.exp(17.67*t/(t+243.5));//es=satvap2(t) //Vapor Pressure
+export function findLCL(p0, t0, td0){
+  var kelvin = 273.15;
+  var tlcl = (((1/(1/(td0 + kelvin - 56) + Math.log ((t0+kelvin)/(td0+kelvin))/800)) + 56) ) -kelvin;
+  var plcl = (p0 * Math.pow ( ( (tlcl + kelvin) / (t0+kelvin)), (7/2) ) );
+  return {'tlcl': tlcl, 'plcl': plcl};
+}
+
+export function wetAdiabaticSlope(t, p){
+  var tk = t + 273.15;
+  var es = 6.112 * Math.exp(17.67*t/(t+243.5));//es=satvap2(t) //Vapor Pressure
   // Mix Ratiows=mixratio(es,pres) //w=ws, ja que agafem la saturada
   var w = 0.622*es/(p-es);
 
@@ -88,4 +88,4 @@ Indexes.prototype.wetAdiabaticSlope = function(t,p){
   var Density=100*p/(287*tempv);
   var lapse=(A/B)/(1005*Density);
   return lapse;
-};
+}

@@ -3,11 +3,20 @@ var tape = require("tape"),
     functions = require("../");
 
 
-  tape("lifting formulas", function(test) {
+  tape("thermodynamics formulas", function(test) {
+    /*
     var contents = fs.readFileSync('./test/exampleBCN.txt').toString();
     var raobData = functions.getWyomingData(contents);
     var indexesInst = new functions.Indexes(raobData);
-    console.info(indexesInst.liftParcel(850, 500));
+    console.info(indexesInst.liftParcel(850, 500));*/
+    //As calculated here: http://www.shodor.org/metweb/session3/lcl1calc.html
+    var lcl = functions.findLCL(1000, 15, 10);
+    test.true(Math.abs(lcl.tlcl - 8.876)< 0.01, "t LCL level from 1000 = 8.876");
+    test.true(Math.abs(lcl.plcl - 927.6)< 0.1, "p LCL level from 1000 = 927.6");
+    lcl = functions.findLCL(850, 0, -5);
+    test.true(Math.abs(lcl.tlcl - (-6.03))< 0.01, "t LCL level from 850 = -6.03");
+    test.true(Math.abs(lcl.plcl - 786.1)< 0.1, "p LCL level from 850 = 786.1");
+
     test.end();
   });
 
