@@ -24,6 +24,8 @@ var tape = require("tape"),
     test.equals(indexesInst.indexes.showalter, indexesInst.showalter(),
                                     "Showalter index is field");
 
+    test.true(Math.abs(indexesInst.kidx() - (-11.3)) < 0.1, "Kidx index is -11.3");
+    test.true(Math.abs(indexesInst.indexes.kidx - (-11.3)) < 0.1, "Kidx index is field");
     test.true(Math.abs(indexesInst.ctot() - 6.7) < 0.1, "CTOT index is 6.7");
     test.true(Math.abs(indexesInst.indexes.ctot - 6.7) < 0.1, "CTOT index is field");
     test.equals(indexesInst.vtot(), 22.7, "VTOT index is 22.7");
@@ -66,7 +68,8 @@ tape("radiosonde indexes at Topeka", function(test) {
     //console.info(indexesInst.showalter());
     test.true(Math.abs(indexesInst.showalter() - (-0.51)) < 0.2,
                                     "Showalter index is -0.51");
-    test.true(Math.abs(indexesInst.ctot() - 23.3) < 0.1, "CTOT index is 23.3");                                    
+    test.true(Math.abs(indexesInst.kidx() - 34.7) < 0.1, "Kidx index is 34.7");
+    test.true(Math.abs(indexesInst.ctot() - 23.3) < 0.1, "CTOT index is 23.3");
     test.equals(indexesInst.vtot(), 26.10, "VTOT index is 26.10");
     test.true(Math.abs(indexesInst.ttot()- 49.4) < 0.1,
     "TTOT index is 49.4");
