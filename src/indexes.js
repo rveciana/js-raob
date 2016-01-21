@@ -33,6 +33,11 @@ Indexes.prototype.showalter = function() {
   return this.indexes.showalter;
 };
 
+Indexes.prototype.ctot = function(){
+  this.indexes.ctot = this.getValuesPress(850)[3] - this.getValuesPress(500)[2];
+  return this.indexes.ctot;
+};
+
 Indexes.prototype.vtot = function(){
   this.indexes.vtot = this.getValuesPress(850)[2] - this.getValuesPress(500)[2];
   return this.indexes.vtot;
