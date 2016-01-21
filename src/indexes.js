@@ -85,6 +85,16 @@ Indexes.prototype.sweat = function(){
   return this.indexes.sweat;
 };
 
+Indexes.prototype.pptw = function(){
+  //The formula divides by -98.1 to make the units correct
+  var acumValue = 0;
+  for (var i=1; i<this.raobData.length -1; i++){
+    acumValue = acumValue + (this.raobData[i][0]-this.raobData[i-1][0])*
+    ((this.raobData[i][5]+this.raobData[i-1][5])/2);
+  }
+  this.indexes.pptw = acumValue/(-98.1);
+  return this.indexes.pptw;
+};
 
 Indexes.prototype.liftParcel = function(iniLevel, endLevel) {
   /*

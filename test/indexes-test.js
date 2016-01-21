@@ -58,6 +58,11 @@ var tape = require("tape"),
     test.true(Math.abs(indexesInst.sweat()- 46) < 0.1,
     "SWEAT index is changed when all conditions in shear are false");
 
+
+    test.true(Math.abs(indexesInst.pptw()- 15.96) < 0.1,
+    "Precipitable water is 15.96");
+    test.true(Math.abs(indexesInst.indexes.pptw - 15.96) < 0.1,
+    "Precipitable water  is field");
     test.end();
 });
 tape("radiosonde indexes at Topeka", function(test) {
@@ -74,6 +79,8 @@ tape("radiosonde indexes at Topeka", function(test) {
     test.true(Math.abs(indexesInst.ttot()- 49.4) < 0.1,
     "TTOT index is 49.4");
 
+    test.true(Math.abs(indexesInst.pptw()- 35.83) < 0.1,
+    "Precipitable water is 35.83");
 
     console.info(indexesInst.sweat());
     //test.true(Math.abs(indexesInst.sweat()- 302.56) < 0.1, "SWEAT index is 302.56");
