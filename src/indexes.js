@@ -89,11 +89,21 @@ Indexes.prototype.pptw = function(){
   //The formula divides by -98.1 to make the units correct
   var acumValue = 0;
   for (var i=1; i<this.raobData.length -1; i++){
+    if(!isNaN(this.raobData[i][0])&&!isNaN(this.raobData[i-1][0])&&
+       !isNaN(this.raobData[i][5])&&!isNaN(this.raobData[i-1][5])){
     acumValue = acumValue + (this.raobData[i][0]-this.raobData[i-1][0])*
     ((this.raobData[i][5]+this.raobData[i-1][5])/2);
+    }
   }
   this.indexes.pptw = acumValue/(-98.1);
   return this.indexes.pptw;
+};
+
+Indexes.prototype.thk = function(){
+  var values1000 = this.getValuesPress(1000);
+  var values500 = this.getValuesPress(500);
+  this.indexes.thk = (values500[1] - values1000[1]);
+  return this.indexes.thk;
 };
 
 Indexes.prototype.liftParcel = function(iniLevel, endLevel) {

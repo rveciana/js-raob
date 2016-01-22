@@ -58,6 +58,10 @@ var tape = require("tape"),
     test.true(Math.abs(indexesInst.sweat()- 46) < 0.1,
     "SWEAT index is changed when all conditions in shear are false");
 
+    test.true(Math.abs(indexesInst.thk()- 5560) < 0.1,
+    "Thickness 1000-500 hPa is 15.96");
+    test.true(Math.abs(indexesInst.indexes.thk - 5560) < 0.1,
+    "Thickness 1000-500 hPa  is field");
 
     test.true(Math.abs(indexesInst.pptw()- 15.96) < 0.1,
     "Precipitable water is 15.96");
@@ -78,6 +82,9 @@ tape("radiosonde indexes at Topeka", function(test) {
     test.equals(indexesInst.vtot(), 26.10, "VTOT index is 26.10");
     test.true(Math.abs(indexesInst.ttot()- 49.4) < 0.1,
     "TTOT index is 49.4");
+
+    test.true(Math.abs(indexesInst.thk()- 5640) < 0.1,
+    "Thickness 1000-500 hPa is 5640");
 
     test.true(Math.abs(indexesInst.pptw()- 35.83) < 0.1,
     "Precipitable water is 35.83");
