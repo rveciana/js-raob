@@ -12,6 +12,11 @@ var tape = require("tape"),
     test.true(Math.abs(lcl.tlcl - (-6.03))< 0.01, "t LCL level from 850 = -6.03");
     test.true(Math.abs(lcl.plcl - 786.1)< 0.1, "p LCL level from 850 = 786.1");
 
+    test.true(Math.abs(functions.potTemp(16.6, 977.0) - 18.55)< 0.1,
+                                              "pot at t=16.6 p=977.0 is 18.55");
+    test.true(Math.abs(functions.potTemp(-35.5, 6.1) - 747.05)< 0.1,
+                                              "pot at t=16.6 p=977.0 is 747.05");
+
     test.end();
   });
 
@@ -82,6 +87,8 @@ tape("radiosonde indexes at Topeka", function(test) {
     test.equals(indexesInst.vtot(), 26.10, "VTOT index is 26.10");
     test.true(Math.abs(indexesInst.ttot()- 49.4) < 0.1,
     "TTOT index is 49.4");
+
+    test.equals(indexesInst.cape(), 47.48, "CAPE index is 47.48");
 
     test.true(Math.abs(indexesInst.thk()- 5640) < 0.1,
     "Thickness 1000-500 hPa is 5640");

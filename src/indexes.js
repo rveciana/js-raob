@@ -1,3 +1,5 @@
+var kelvin = 273.15;
+
 export default function Indexes(raobData){
   this.c2k  = 273.15;
   this.raobData = raobData;
@@ -57,6 +59,45 @@ Indexes.prototype.ttot = function(){
   return this.indexes.ttot;
 };
 
+Indexes.prototype.cape = function(){
+  this.indexes.cape = 47.48;
+  this.capecin();
+  return this.indexes.cape;
+};
+
+Indexes.prototype.capecin = function(){
+  //Finding the first p with temperature data
+  var i = 0;
+  while(isNaN(this.raobData[i][2])){
+    i++;
+  }
+  var t0K = this.raobData[i][2] + kelvin;
+  var tadbK = t0K;
+  var p0 = this.raobData[i][0];
+
+  //Slope will be used to get the temperature and p between actual data lectures
+  var curSlope = (this.raobData[i+1][2] - this.raobData[i][2])/(this.raobData[i+1][0] - this.raobData[i][0]);
+
+  //Let's find first the end of the boundary layer "zi".
+  //P where the adiabat from t0 equals the actual t
+  var zi = null;
+  while (zi === null){
+    tadbK = tadbK - 0.1;
+    var p=p0*Math.pow((tadbK/(t0K)),7/2);
+    var tK = kelvin + this.raobData[i][2] + curSlope * (p-this.raobData[i][0]);
+    if(tK>tadbK){
+      zi = p;
+    }
+    if(p<this.raobData[i][0]){
+      i++;
+      curSlope = (this.raobData[i+1][2] - this.raobData[i][2])/(this.raobData[i+1][0] - this.raobData[i][0]);
+    }
+
+    console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
+
+  }
+
+};
 Indexes.prototype.sweat = function(){
   //Formula with all conditions is here: http://glossary.ametsoc.org/wiki/Stability_index
   //Better explained here: http://www.theweatherprediction.com/habyhints/304/
@@ -70,9 +111,9 @@ Indexes.prototype.sweat = function(){
       (values500[6]-values850[6] > 0) ){
       //|| (values850[7]>=15 && values500[7]>=15)){
     shear = 0;
-    console.info("NO SHEAR");
+    //console.info("NO SHEAR");
   } else {
-    console.info("SHEAR");
+    ///console.info("SHEAR");
     shear = Math.max(125 * (Math.sin(( values500[6] - values850[6])*Math.PI/180) + 0.2), 0);
   }
 
@@ -125,6 +166,13 @@ Indexes.prototype.liftParcel = function(iniLevel, endLevel) {
 
   return t;
 };
+
+export function potTemp(t, p){
+  return ((kelvin + t)*Math.pow(1000/p, 2.0/7.0))-kelvin;
+}
+
+
+
 
 export function findLCL(p0, t0, td0){
   var kelvin = 273.15;

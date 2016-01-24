@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "faucet": "0.0.1",
-    "rollup": "0.25.0",
+    "rollup": "0.25.1",
     "tape": "4",
     "uglify-js": "2"
   }
