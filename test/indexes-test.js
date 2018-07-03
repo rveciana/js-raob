@@ -74,31 +74,31 @@ var tape = require("tape"),
     "Precipitable water  is field");
     test.end();
 });
-tape("radiosonde indexes at Topeka", function(test) {
-    //2007Topeka tornado indexes:
-    var contents = fs.readFileSync('./test/example_topeka2007_tornadof5.txt').toString();
+tape("radiosonde indexes at Key West", function(test) {
+    var contents = fs.readFileSync('./test/example_keywest.txt').toString();
     var raobData = functions.getWyomingData(contents);
     var indexesInst = new functions.Indexes(raobData);
     //console.info(indexesInst.showalter());
-    test.true(Math.abs(indexesInst.showalter() - (-0.51)) < 0.2,
-                                    "Showalter index is -0.51");
-    test.true(Math.abs(indexesInst.kidx() - 34.7) < 0.1, "Kidx index is 34.7");
-    test.true(Math.abs(indexesInst.ctot() - 23.3) < 0.1, "CTOT index is 23.3");
-    test.equals(indexesInst.vtot(), 26.10, "VTOT index is 26.10");
-    test.true(Math.abs(indexesInst.ttot()- 49.4) < 0.1,
-    "TTOT index is 49.4");
+    test.true(Math.abs(indexesInst.showalter() - (-0.23)) < 0.2,
+                                    "Showalter index is -0.23");
+                    
+    test.true(Math.abs(indexesInst.kidx() - 31.5) < 0.1, "Kidx index is 31.5");
+    test.true(Math.abs(indexesInst.ctot() - 20.9) < 0.1, "CTOT index is 20.9");
+    test.true(Math.abs(indexesInst.vtot() - 24.7) < 0.0001, "VTOT index is 24.7");
+    
+    test.true(Math.abs(indexesInst.ttot()- 45.6) < 0.1,
+    "TTOT index is 45.6");
 
-    test.equals(indexesInst.cape(), 47.48, "CAPE index is 47.48");
+    test.equals(indexesInst.cape(), 2546.25, "CAPE index is 2546.25");
+    test.true(Math.abs(indexesInst.thk()- 5766) < 0.1,
+    "Thickness 1000-500 hPa is 5766");
 
-    test.true(Math.abs(indexesInst.thk()- 5640) < 0.1,
-    "Thickness 1000-500 hPa is 5640");
-
-    test.true(Math.abs(indexesInst.pptw()- 35.83) < 0.1,
-    "Precipitable water is 35.83");
-
+    test.true(Math.abs(indexesInst.pptw()- 47.99) < 0.1,
+    "Precipitable water is 47.99");
+/*
     console.info(indexesInst.sweat());
     //test.true(Math.abs(indexesInst.sweat()- 302.56) < 0.1, "SWEAT index is 302.56");
-
+*/
     test.end();
   });
 

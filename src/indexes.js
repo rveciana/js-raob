@@ -26,6 +26,7 @@ Indexes.prototype.getValuesPress = function(press) {
             -15.7, -23.7, 50, 1.14, 275, 26, 313.8, 317.8, 314.1];*/
 
   }
+  console.info(press, this.indexedData[press]);
   return this.indexedData[press];
 };
 
@@ -61,6 +62,7 @@ Indexes.prototype.ttot = function(){
 
 Indexes.prototype.cape = function(){
   this.indexes.cape = 47.48;
+
   this.capecin();
   return this.indexes.cape;
 };
@@ -92,10 +94,20 @@ Indexes.prototype.capecin = function(){
       i++;
       curSlope = (this.raobData[i+1][2] - this.raobData[i][2])/(this.raobData[i+1][0] - this.raobData[i][0]);
     }
-
-    console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
-
+   
   }
+  var endp = 200;
+  var deltap = 0.1;
+  var flag_index = false;
+
+  while (p >= endp && flag_index==false) {
+    var values = this.getValuesPress(p);
+    p = p - deltap;
+  }
+  console.info("DDDDD");
+
+  console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
+
 
 };
 Indexes.prototype.sweat = function(){
