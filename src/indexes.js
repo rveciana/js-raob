@@ -8,25 +8,26 @@ export default function Indexes(raobData){
 }
 
 Indexes.prototype.getValuesPress = function(press) {
-  if (press in this.indexedData) {
-
-  } else {
-    var closestDown = -1;
-    for (var i=0; i<this.raobData.length -1; i++){
-      if(this.raobData[i][0]===press){
-        this.indexedData[press] = this.raobData[i];
-      } else if (this.raobData[i][0] > press){
-        closestDown = i;
-      }
+  var i = 0;
+  while(!(press in this.indexedData) && i < this.raobData.length){
+    if(this.raobData[i][0] === press){
+      this.indexedData[press] = this.raobData[i];
+    } else if (this.raobData[i][0] < press){
+      var weight1 = this.raobData[i-1][0] - press;
+      var weight2 = press - this.raobData[i][0];
+      this.indexedData[press] = this.raobData[i].map((value, idx) => {
+        return (weight1 * value + weight2 * this.raobData[i-1][idx]) / (weight1 + weight2);
+      });
     }
+    i++;
+  }
    //todo: USE BAROMETRIC FORMULA: https://en.wikipedia.org/wiki/Barometric_formula
    /*
     this.indexedData[press] = [press,
             this.raobData[closestDown][1] + (this.raobData[closestDown][0]-press)/0.12,
             -15.7, -23.7, 50, 1.14, 275, 26, 313.8, 317.8, 314.1];*/
 
-  }
-  console.info(press, this.indexedData[press]);
+  
   return this.indexedData[press];
 };
 
@@ -104,9 +105,8 @@ Indexes.prototype.capecin = function(){
     var values = this.getValuesPress(p);
     p = p - deltap;
   }
-  console.info("DDDDD");
 
-  console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
+  //console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
 
 
 };

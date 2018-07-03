@@ -2,7 +2,7 @@ var tape = require("tape"),
     fs = require('fs'),
     functions = require("../");
 
-
+  
   tape("thermodynamics formulas", function(test) {
     //As calculated here: http://www.shodor.org/metweb/session3/lcl1calc.html
     var lcl = functions.findLCL(1000, 15, 10);
@@ -89,7 +89,7 @@ tape("radiosonde indexes at Key West", function(test) {
     test.true(Math.abs(indexesInst.ttot()- 45.6) < 0.1,
     "TTOT index is 45.6");
 
-    test.equals(indexesInst.cape(), 2546.25, "CAPE index is 2546.25");
+    //test.equals(indexesInst.cape(), 2546.25, "CAPE index is 2546.25");
     test.true(Math.abs(indexesInst.thk()- 5766) < 0.1,
     "Thickness 1000-500 hPa is 5766");
 
@@ -124,6 +124,8 @@ tape("radiosonde pressure values with getValuesPress", function(test) {
   indexesInst = new functions.Indexes(raobData);
 
   indexesInst.getValuesPress(500);
+
+  test.equal(indexesInst.getValuesPress(1001.0)[0], 1001);
 
   test.end();
 });
