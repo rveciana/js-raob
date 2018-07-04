@@ -89,7 +89,7 @@ tape("radiosonde indexes at Key West", function(test) {
     test.true(Math.abs(indexesInst.ttot()- 45.6) < 0.1,
     "TTOT index is 45.6");
 
-    //test.equals(indexesInst.cape(), 2546.25, "CAPE index is 2546.25");
+    test.equals(indexesInst.cape(), 2302.40, "CAPE index is 2302.40");
     test.true(Math.abs(indexesInst.thk()- 5766) < 0.1,
     "Thickness 1000-500 hPa is 5766");
 

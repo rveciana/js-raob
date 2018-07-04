@@ -69,6 +69,7 @@ Indexes.prototype.cape = function(){
 };
 
 Indexes.prototype.capecin = function(){
+  var cape = 0;
   //Finding the first p with temperature data
   var i = 0;
   while(isNaN(this.raobData[i][2])){
@@ -76,6 +77,7 @@ Indexes.prototype.capecin = function(){
   }
   var t0K = this.raobData[i][2] + kelvin;
   var tadbK = t0K;
+  var tp;
   var p0 = this.raobData[i][0];
 
   //Slope will be used to get the temperature and p between actual data lectures
@@ -97,17 +99,32 @@ Indexes.prototype.capecin = function(){
     }
    
   }
-  var endp = 200;
+  var endp = 100;
   var deltap = 0.1;
   var flag_index = false;
 
+  var lcl = findLCL(this.raobData[0][0], this.raobData[0][2], this.raobData[0][3]);
+
   while (p >= endp && flag_index==false) {
     var values = this.getValuesPress(p);
+    
+    var z = values[1];
+    var t = values[2] + kelvin;
+    if(p >= lcl.plcl){ 
+      tp = t0K * Math.pow(p/p0,2/7);
+    } else { 
+      tp = tp - wetAdiabaticSlope(tp-kelvin,p-(deltap/2))*100*deltap;
+    }
+    var en = 9.8 * ((tp-t)/t) * (z-zi);
+    if(en > 0){
+      cape = cape + en;
+    }
     p = p - deltap;
+    zi = z;
   }
 
   //console.info("-----------_> P: " + p + " T: " + (tK-kelvin) + " tadbK: " + (tadbK-kelvin) + " zi: " + zi);
-
+  console.info("---->", cape);
 
 };
 Indexes.prototype.sweat = function(){
@@ -183,12 +200,8 @@ export function potTemp(t, p){
   return ((kelvin + t)*Math.pow(1000/p, 2.0/7.0))-kelvin;
 }
 
-
-
-
 export function findLCL(p0, t0, td0){
-  var kelvin = 273.15;
-  var tlcl = (((1/(1/(td0 + kelvin - 56) + Math.log ((t0+kelvin)/(td0+kelvin))/800)) + 56) ) -kelvin;
+  var tlcl = (((1/(1/(td0 + kelvin - 56) + Math.log ((t0+kelvin)/(td0+kelvin))/800)) + 56) ) - kelvin;
   var plcl = (p0 * Math.pow ( ( (tlcl + kelvin) / (t0+kelvin)), (7/2) ) );
   return {'tlcl': tlcl, 'plcl': plcl};
 }
